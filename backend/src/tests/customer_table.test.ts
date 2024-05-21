@@ -17,7 +17,7 @@ describe('Prisma Customer Model', () => {
     const newCustomer = await prisma.customer.create({
       data: {
         name: 'John Doe',
-        email: 'john.doe@example.com',
+        email: 'john.doe@email.com',
         hashed_pass: 'hashedpassword123',
       },
     });
