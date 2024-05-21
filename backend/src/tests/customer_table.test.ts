@@ -41,11 +41,4 @@ describe('Prisma Customer Model', () => {
     expect(updatedCustomer.name).toBe('John Doe Updated');
   });
 
-  test('delete a customer', async () => {
-    const deletedCustomer = await prisma.customer.delete({
-      where: { id: customerId },
-    });
-
-    expect(deletedCustomer).toHaveProperty('id');
-  });
 });

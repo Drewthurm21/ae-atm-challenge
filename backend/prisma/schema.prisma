@@ -19,21 +19,19 @@ model Customer {
 }
 
 model Account {
-  id           Int      @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   customer_id  Int
-  type_id      Int
-  balance      Decimal  @default(0)
-  credit_limit Int      @default(0)
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  type         AccountType @default(CHECKING)
+  balance      Decimal     @default(0)
+  credit_limit Int         @default(0)
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
 
-  customer    Customer    @relation(fields: [customer_id], references: [id])
-  accountType AccountType @relation(fields: [type_id], references: [id])
+  customer Customer @relation(fields: [customer_id], references: [id], onDelete: Cascade)
 }
 
-model AccountType {
-  id   Int    @id @default(autoincrement())
-  type String @unique
-
-  accounts Account[]
+enum AccountType {
+  CHECKING
+  SAVINGS
+  CREDIT
 }
