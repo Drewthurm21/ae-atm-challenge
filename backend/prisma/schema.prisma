@@ -8,10 +8,21 @@ generator client {
 }
 
 model Customer {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
-  email       String   @unique
+  email       String    @unique
   hashed_pass String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  accounts    Account[]
+}
+
+model Account {
+  id           Int      @id @default(autoincrement())
+  customer_id  Int
+  account_type String
+  balance      Decimal  @default(0)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  customer     Customer @relation(fields: [customer_id], references: [id])
 }
