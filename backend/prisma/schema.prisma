@@ -17,6 +17,8 @@ model Customer {
 
   accounts     Account[]
   transactions Transaction[]
+
+  @@index([email(sort: Desc)])
 }
 
 model Account {
@@ -31,6 +33,8 @@ model Account {
   customer     Customer      @relation(fields: [customer_id], references: [id], onDelete: Cascade)
   daily_totals DailyTotal[]
   transactions Transaction[]
+
+  @@index([customer_id])
 }
 
 enum AccountType {
@@ -53,6 +57,8 @@ model DailyTotal {
   account Account @relation(fields: [account_id], references: [id], onDelete: Cascade)
 
   @@unique([account_id, date])
+  @@index([account_id])
+  @@index([date])
 }
 
 model Transaction {
@@ -69,6 +75,9 @@ model Transaction {
 
   account  Account  @relation(fields: [account_id], references: [id], onDelete: Cascade)
   customer Customer @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+
+  @@index([account_id])
+  @@index([customer_id])
 }
 
 enum TransactionType {
