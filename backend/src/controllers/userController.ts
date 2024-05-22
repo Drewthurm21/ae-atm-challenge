@@ -7,10 +7,8 @@ import { CustomerWithOptionalDetails, safeCustomerData } from '../types'
 //in practice, we would use other means to authenticate a user
 export const loginUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
-  let accountNumber = 63;
-
   try {
-    // const { accountNumber }: { accountNumber: number } = req.body;
+    const { accountNumber }: { accountNumber: number } = req.body;
 
     const customerWithAccountIds: CustomerWithOptionalDetails | null = await prisma.customer.findUnique({
       where: {
