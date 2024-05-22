@@ -15,23 +15,79 @@ model Customer {
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
-  accounts Account[]
+  accounts     Account[]
+  transactions Transaction[]
+
+  @@index([email(sort: Desc)])
 }
 
 model Account {
   id           Int         @id @default(autoincrement())
   customer_id  Int
   type         AccountType @default(CHECKING)
-  balance      Decimal     @default(0)
+  balance      Decimal     @default(0.00) @db.Decimal(18, 2)
   credit_limit Int         @default(0)
   created_at   DateTime    @default(now())
   updated_at   DateTime    @updatedAt
 
-  customer Customer @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+  customer     Customer      @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+  daily_totals DailyTotal[]
+  transactions Transaction[]
+
+  @@index([customer_id])
 }
 
 enum AccountType {
   CHECKING
   SAVINGS
   CREDIT
+}
+
+model DailyTotal {
+  id              Int      @id @default(autoincrement())
+  account_id      Int
+  date            DateTime @default(now()) @db.Date
+  total_deposit   Decimal  @default(0.00) @db.Decimal(18, 2)
+  total_witdrawal Decimal  @default(0.00) @db.Decimal(18, 2)
+  total_transfer  Decimal  @default(0.00) @db.Decimal(18, 2)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  account Account @relation(fields: [account_id], references: [id], onDelete: Cascade)
+
+  @@unique([account_id, date])
+  @@index([account_id])
+  @@index([date])
+}
+
+model Transaction {
+  id          Int               @id @default(autoincrement())
+  account_id  Int
+  customer_id Int
+  type        TransactionType   @default(DEPOSIT)
+  credit      Decimal           @default(0.00) @db.Decimal(18, 2)
+  debit       Decimal           @default(0.00) @db.Decimal(18, 2)
+  net_effect  Decimal           @default(0.00) @db.Decimal(18, 2)
+  status      TransactionStatus @default(PENDING)
+  created_at  DateTime          @default(now())
+  updated_at  DateTime          @updatedAt
+
+  account  Account  @relation(fields: [account_id], references: [id], onDelete: Cascade)
+  customer Customer @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+
+  @@index([account_id])
+  @@index([customer_id])
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
 }

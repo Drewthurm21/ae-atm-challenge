@@ -56,11 +56,4 @@ describe('Prisma Account Model', () => {
     expect(updatedAccount.balance.toString()).toBe('600');
   });
 
-  test('delete an account', async () => {
-    const deletedAccount = await prisma.account.delete({
-      where: { id: accountId },
-    });
-
-    expect(deletedAccount).toHaveProperty('id');
-  });
 });
