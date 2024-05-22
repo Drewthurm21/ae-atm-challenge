@@ -15,8 +15,8 @@ model Customer {
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
-  accounts    Account[]
-  Transaction Transaction[]
+  accounts     Account[]
+  transactions Transaction[]
 }
 
 model Account {
@@ -28,9 +28,9 @@ model Account {
   created_at   DateTime    @default(now())
   updated_at   DateTime    @updatedAt
 
-  customer    Customer      @relation(fields: [customer_id], references: [id], onDelete: Cascade)
-  DailyTotal  DailyTotal[]
-  Transaction Transaction[]
+  customer     Customer      @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+  daily_totals DailyTotal[]
+  transactions Transaction[]
 }
 
 enum AccountType {
