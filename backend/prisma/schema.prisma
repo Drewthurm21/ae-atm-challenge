@@ -15,7 +15,8 @@ model Customer {
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
-  accounts Account[]
+  accounts    Account[]
+  Transaction Transaction[]
 }
 
 model Account {
@@ -27,8 +28,9 @@ model Account {
   created_at   DateTime    @default(now())
   updated_at   DateTime    @updatedAt
 
-  customer   Customer     @relation(fields: [customer_id], references: [id], onDelete: Cascade)
-  DailyTotal DailyTotal[]
+  customer    Customer      @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+  DailyTotal  DailyTotal[]
+  Transaction Transaction[]
 }
 
 enum AccountType {
@@ -51,4 +53,32 @@ model DailyTotal {
   account Account @relation(fields: [account_id], references: [id], onDelete: Cascade)
 
   @@unique([account_id, date])
+}
+
+model Transaction {
+  id          Int               @id @default(autoincrement())
+  account_id  Int
+  customer_id Int
+  type        TransactionType   @default(DEPOSIT)
+  credit      Decimal           @default(0.00) @db.Decimal(18, 2)
+  debit       Decimal           @default(0.00) @db.Decimal(18, 2)
+  net_effect  Decimal           @default(0.00) @db.Decimal(18, 2)
+  status      TransactionStatus @default(PENDING)
+  created_at  DateTime          @default(now())
+  updated_at  DateTime          @updatedAt
+
+  account  Account  @relation(fields: [account_id], references: [id], onDelete: Cascade)
+  customer Customer @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
 }
