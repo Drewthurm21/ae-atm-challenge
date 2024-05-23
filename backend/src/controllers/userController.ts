@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../app';
 import { CustomerWithOptionalDetails, safeCustomerData } from '../types'
+import { CustomError } from '../middleware/errorHandler'
 
 //the account number and user numbers match in this exercise, as such the account number is used to login a user
 //the implementation is irregular, but it is done this way to match the requirements of the project
@@ -16,7 +17,9 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     });
 
     if (!customerWithAccountIds) {
-      throw new Error('Customer account not found');
+      const error: CustomError = new Error('Customer account not found.');
+      error.status = 404;
+      throw error;
     }
 
     const safeCustomerData: safeCustomerData = {
@@ -28,7 +31,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     res.status(200).json(safeCustomerData);
 
   } catch (error) {
-    console.error('Error in loginUser. Request body:', req.body);
+    console.error('Error occurred in loginUser.');
     next(error);
   }
 };

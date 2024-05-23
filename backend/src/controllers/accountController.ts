@@ -2,19 +2,22 @@ import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../app';
 import { Transaction } from '@prisma/client';
 import { AccountWithOptionalDetails } from '../types';
+import { CustomError } from '../middleware/errorHandler';
 
 
 export const getAccountById = async (req: Request, res: Response, next: NextFunction) => {
-  const { id }= req.params;
+  const { account_id }= req.params;
 
   try {
     const account: AccountWithOptionalDetails | null = await prisma.account.findUnique({
-      where: { id: Number(id) },
+      where: { id: Number(account_id) },
       include: { transactions: true }
     });
 
     if (!account) {
-      throw new Error('Account not found.');
+      const error: CustomError = new Error('Account not found.');
+      error.status = 404;
+      throw error;
     };
 
     const accountData = {
@@ -22,29 +25,32 @@ export const getAccountById = async (req: Request, res: Response, next: NextFunc
       balance: account.balance,
       type: account.type,
       credit_limit: account.credit_limit,
-      transaction_ids: account.transactions?.map(transaction => transaction.id)
+      transaction_ids: account.transactions!.map(transaction => transaction.id)
     };
 
     res.status(200).json(accountData);
   } catch (error) {
-    console.error('Error in getAccountById. Request body:', req.body);
+    console.error('Error occurred in getAccountById.');
     next(error);
   };
 };
 
 export const getAccountTransactions = async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
+  const { account_id } = req.params;
   
   try {
-    const transactions: Transaction[] | null = await prisma.transaction.findMany({
-      where: { account_id: Number(id) }
+    const account: AccountWithOptionalDetails | null = await prisma.account.findUnique({
+      where: { id: Number(account_id) },
+      include: { transactions: true }
     });
 
-    if (!transactions || transactions.length === 0) {
-      throw new Error('Transactions not found.');
+    if (!account) {
+      const error: CustomError = new Error('Account not found.');
+      error.status = 404;
+      throw error;
     };
 
-    const transactionData: Record<number, Transaction> = transactions.reduce((acc: any, transaction) => {
+    const transactionData: Record<number, Transaction> = account.transactions!.reduce((acc: any, transaction) => {
       acc[transaction.id] = transaction;
       return acc
     }, {});
@@ -52,7 +58,7 @@ export const getAccountTransactions = async (req: Request, res: Response, next: 
     res.status(200).json(transactionData);
 
   } catch (error) {
-    console.error('Error in getAccountTransactions. Request body:', req);
+    console.error('Error occurred in getAccountTransactions.');
     next(error);
   };
 };
