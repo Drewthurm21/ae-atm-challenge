@@ -11,22 +11,18 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     const { accountNumber }: { accountNumber: number } = req.body;
 
     const customerWithAccountIds: CustomerWithOptionalDetails | null = await prisma.customer.findUnique({
-      where: {
-        id: accountNumber
-      },
-      include: {
-        accounts: true
-      }
+      where: { id: accountNumber },
+      include: { accounts: true }
     });
 
     if (!customerWithAccountIds) {
       throw new Error('Customer account not found');
     }
 
-    let safeCustomerData: safeCustomerData = {
+    const safeCustomerData: safeCustomerData = {
       id: customerWithAccountIds.id,
       name: customerWithAccountIds.name,
-      account_ids: customerWithAccountIds.accounts?.map(account => account.id)
+      account_ids: customerWithAccountIds.accounts.map(account => account.id)
     }
 
     res.status(200).json(safeCustomerData);
