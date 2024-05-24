@@ -8,7 +8,7 @@ const prisma = new PrismaClient({
     },
   },
 });
-
+ 
 describe('Prisma Account Model', () => {
   let accountId: number;
   let testAccountType = AccountType.CHECKING;

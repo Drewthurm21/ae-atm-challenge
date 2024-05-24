@@ -11,11 +11,22 @@ const prisma = new PrismaClient({
 
 describe('Customer, Account, and Transaction Relationships', () => {
   let transactionId: number;
+  let initialBalance: Decimal;
+
   const CUSTOMER_ID = 1;
   const ACCOUNT_ID = 1;
   const WITHDRAWAL_AMOUNT = 105;
-  const INITIAL_BALANCE = new Decimal(1000.00);
   const DEPOSIT_AMOUNT = new Decimal(200.52);
+
+  beforeAll(async () => {
+    let account = await prisma.account.findUnique({
+      where: { id: ACCOUNT_ID },
+    });
+
+    if (account) {
+      initialBalance = new Decimal(account.balance)
+    }
+  });
   
   afterAll(async () => {
     await prisma.$disconnect();
@@ -65,7 +76,11 @@ describe('Customer, Account, and Transaction Relationships', () => {
       where: { id: CUSTOMER_ID },
       include: {
         accounts: true,
-        transactions: true,
+          transactions:      {
+           orderBy: {
+            id: 'asc',
+          },
+        },
       },
     });
 
@@ -140,7 +155,7 @@ describe('Customer, Account, and Transaction Relationships', () => {
         return acc.plus(transaction.net_effect);
       }, new Decimal(0));
   
-      expect(finalBalance.toString()).toBe(INITIAL_BALANCE.plus(DEPOSIT_AMOUNT).minus(WITHDRAWAL_AMOUNT).toString());
+      expect(finalBalance.toString()).toBe(initialBalance.plus(DEPOSIT_AMOUNT).minus(WITHDRAWAL_AMOUNT).toString());
     }
 
   });
