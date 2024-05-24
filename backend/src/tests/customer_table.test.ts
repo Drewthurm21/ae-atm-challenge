@@ -1,15 +1,17 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.TEST_DATABASE_URL,
+    },
+  },
+});
 
 describe('Prisma Customer Model', () => {
   let customerId: number;
 
-  beforeAll(async () => {
-    await prisma.customer.deleteMany();
-  });
-
-  afterAll(async () => {
+  afterAll(async () => { 
     await prisma.$disconnect();
   });
 
@@ -17,10 +19,11 @@ describe('Prisma Customer Model', () => {
     const newCustomer = await prisma.customer.create({
       data: {
         name: 'John Doe',
-        email: 'john.doe@email.com',
+        email: 'customer.table@email.com',
         hashed_pass: 'hashedpassword123',
       },
     });
+
     customerId = newCustomer.id;
 
     expect(newCustomer).toHaveProperty('id');
@@ -29,7 +32,7 @@ describe('Prisma Customer Model', () => {
 
   test('read all customers', async () => {
     const allCustomers = await prisma.customer.findMany();
-    expect(allCustomers.length).toBeGreaterThan(0);
+    expect(allCustomers.length).toBeGreaterThan(3);
   });
 
   test('update a customer', async () => {

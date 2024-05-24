@@ -6,6 +6,7 @@ import { CustomError } from '../middleware/errorHandler';
 
 
 export const getAccountById = async (req: Request, res: Response, next: NextFunction) => {
+  
   const { account_id }= req.params;
 
   try {

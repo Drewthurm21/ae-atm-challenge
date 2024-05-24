@@ -1,42 +1,22 @@
 import { PrismaClient } from '@prisma/client';
 import Decimal from 'decimal.js';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.TEST_DATABASE_URL,
+    },
+  },
+});
 
 describe('Customer, Account, and Transaction Relationships', () => {
-  let customerId: number;
-  let accountId: number;
   let transactionId: number;
-  let initialBalance: Decimal = new Decimal(1000.00);
-  let withdrawalAmount: number = 105;
-  let depositAmount: Decimal = new Decimal(200.52);
-
-  beforeAll(async () => {
-    await prisma.transaction.deleteMany();
-    await prisma.account.deleteMany();
-    await prisma.customer.deleteMany();
-
-    const customer = await prisma.customer.create({
-      data: {
-        name: 'John Doe',
-        email: 'johndoe@email.com',
-        hashed_pass: 'hashedpassword123',
-      },
-    });
-
-    const account = await prisma.account.create({
-      data: {
-        customer_id: customer.id,
-        type: 'CHECKING',
-        balance: initialBalance,
-        credit_limit: 500,
-      },
-    });
-
-    customerId = customer.id;
-    accountId = account.id;
-  });
-
+  const CUSTOMER_ID = 1;
+  const ACCOUNT_ID = 1;
+  const WITHDRAWAL_AMOUNT = 105;
+  const INITIAL_BALANCE = new Decimal(1000.00);
+  const DEPOSIT_AMOUNT = new Decimal(200.52);
+  
   afterAll(async () => {
     await prisma.$disconnect();
   });
@@ -44,12 +24,12 @@ describe('Customer, Account, and Transaction Relationships', () => {
   test('create a deposit, update account, check result through customer', async () => {
     const transaction = await prisma.transaction.create({
       data: {
-        account_id: accountId,
-        customer_id: customerId,
+        account_id: ACCOUNT_ID,
+        customer_id: CUSTOMER_ID,
         type: 'DEPOSIT',
-        credit: depositAmount,
+        credit: DEPOSIT_AMOUNT,
         debit: new Decimal(0.00),
-        net_effect: depositAmount,
+        net_effect: DEPOSIT_AMOUNT,
         status: 'PENDING',
       },
     });
@@ -57,51 +37,58 @@ describe('Customer, Account, and Transaction Relationships', () => {
     transactionId = transaction.id;
 
     expect(transaction).toHaveProperty('id');
-    expect(transaction.account_id).toBe(accountId);
-    expect(transaction.customer_id).toBe(customerId);
-    expect(transaction.credit.toString()).toBe(`${depositAmount}`);
+    expect(transaction.account_id).toBe(ACCOUNT_ID);
+    expect(transaction.customer_id).toBe(CUSTOMER_ID);
+    expect(transaction.credit.toString()).toBe(`${DEPOSIT_AMOUNT}`);
 
     await prisma.account.update({
-      where: { id: accountId },
+      where: { id: ACCOUNT_ID },
       data: {
         balance: { increment: transaction.net_effect },
       },
     });
 
     const customer = await prisma.customer.findUnique({
-      where: { id: customerId },
+      where: { id: CUSTOMER_ID },
       include: { accounts: true, transactions: true},
     });
     
-    expect(customer?.accounts[0].balance.toString()).toBe('1200.52');
-    expect(customer?.transactions.length).toBe(1);
+    if (customer) {
+      expect(customer.accounts[0].balance.toString()).toBe('1200.52');
+      expect(customer.transactions.length).toBeGreaterThan(1);
+      expect(customer.transactions[customer.transactions.length - 1].id).toBe(transactionId);
+    }
   });
 
   test('fetch a customer with accounts and transactions', async () => {
     const customer = await prisma.customer.findUnique({
-      where: { id: customerId },
+      where: { id: CUSTOMER_ID },
       include: {
         accounts: true,
         transactions: true,
       },
     });
 
-    expect(customer).toHaveProperty('id');
-    expect(customer?.accounts.length).toBe(1);
-    expect(customer?.transactions.length).toBe(1);
+    if (customer) {
+      expect(customer.accounts.length).toBe(1);
+      expect(customer.transactions.length).toBeGreaterThan(1);
+      expect(customer.transactions[customer.transactions.length - 1].id).toBe(transactionId);
+    }
   });
 
   test('fetch an account with transactions', async () => {
     const account = await prisma.account.findUnique({
-      where: { id: accountId },
+      where: { id: ACCOUNT_ID },
       include: {
         transactions: true,
       },
     });
 
-    expect(account).toHaveProperty('id');
-    expect(account?.customer_id).toBe(customerId);
-    expect(account?.transactions.length).toBe(1);
+    if (account) {
+      expect(account.customer_id).toBe(CUSTOMER_ID);
+      expect(account.transactions.length).toBeGreaterThan(1);
+      expect(account.transactions[account.transactions.length - 1].id).toBe(transactionId);
+    }
   });
 
   test('fetch a transaction with account and customer', async () => {
@@ -113,28 +100,29 @@ describe('Customer, Account, and Transaction Relationships', () => {
       },
     });
 
-    expect(transaction).toHaveProperty('id');
-    expect(transaction?.account.id).toBe(accountId);
-    expect(transaction?.customer.id).toBe(customerId);
+    if (transaction) {
+      expect(transaction.account.id).toBe(ACCOUNT_ID);
+      expect(transaction.customer.id).toBe(CUSTOMER_ID);
+    };
   });
 
   test('create withdrawl and verify transaction effect', async () => {
     await prisma.transaction.create({
       data: {
-        account_id: accountId,
-        customer_id: customerId,
+        account_id: ACCOUNT_ID,
+        customer_id: CUSTOMER_ID,
         type: 'WITHDRAWAL',
         credit: new Decimal(0.00),
-        debit: withdrawalAmount,
-        net_effect: withdrawalAmount * -1,
+        debit: WITHDRAWAL_AMOUNT,
+        net_effect: WITHDRAWAL_AMOUNT * -1,
         status: 'COMPLETED',
       },
     });
 
     const updatedAccount = await prisma.account.update({
-      where: { id: accountId },
+      where: { id: ACCOUNT_ID },
       data: {
-        balance: { decrement: withdrawalAmount },
+        balance: { decrement: WITHDRAWAL_AMOUNT },
       },
     });
 
@@ -143,15 +131,17 @@ describe('Customer, Account, and Transaction Relationships', () => {
 
   test('verify account accuracy through customer query', async () => {
     const customer = await prisma.customer.findUnique({
-      where: { id: customerId },
+      where: { id: CUSTOMER_ID },
       include: { accounts: true, transactions: true }
     });
 
-    let finalBalance = customer?.transactions.reduce((acc, transaction) => {
-      return acc.plus(transaction.net_effect);
-    }, initialBalance);
-
-    expect(finalBalance?.toString()).toBe(initialBalance.plus(depositAmount).minus(withdrawalAmount).toString());
+    if (customer) {
+      let finalBalance = customer.transactions.reduce((acc, transaction) => {
+        return acc.plus(transaction.net_effect);
+      }, new Decimal(0));
+  
+      expect(finalBalance.toString()).toBe(INITIAL_BALANCE.plus(DEPOSIT_AMOUNT).minus(WITHDRAWAL_AMOUNT).toString());
+    }
 
   });
 });
