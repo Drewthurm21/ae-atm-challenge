@@ -122,6 +122,9 @@ export const createPendingTransaction = async (customer_id: number, account_id: 
             credit: credit,
             debit: debit,
             net_effect: credit - debit,
+            type: credit - debit > 0 ? 'DEPOSIT' : 'WITHDRAWAL',
+            status: TransactionStatus.PENDING,
+            created_at: new Date(),
         }
     });
 };
