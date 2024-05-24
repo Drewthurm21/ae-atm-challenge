@@ -3,6 +3,7 @@ import { prisma } from '../app';
 import { Transaction } from '@prisma/client';
 import { AccountWithOptionalDetails } from '../types';
 import { CustomError } from '../middleware/errorHandler';
+import { getAccountWithTransactionsById, getTransactionsByAccountId } from '../services/queries';
 
 
 export const getAccountById = async (req: Request, res: Response, next: NextFunction) => {
@@ -10,10 +11,7 @@ export const getAccountById = async (req: Request, res: Response, next: NextFunc
   const { account_id }= req.params;
 
   try {
-    const account: AccountWithOptionalDetails | null = await prisma.account.findUnique({
-      where: { id: Number(account_id) },
-      include: { transactions: true }
-    });
+    const account: AccountWithOptionalDetails | null = await getAccountWithTransactionsById(Number(account_id));
 
     if (!account) {
       const error: CustomError = new Error('Account not found.');
@@ -30,6 +28,7 @@ export const getAccountById = async (req: Request, res: Response, next: NextFunc
     };
 
     res.status(200).json(accountData);
+    
   } catch (error) {
     console.error('Error occurred in getAccountById.');
     next(error);
@@ -40,23 +39,20 @@ export const getAccountTransactions = async (req: Request, res: Response, next: 
   const { account_id } = req.params;
   
   try {
-    const account: AccountWithOptionalDetails | null = await prisma.account.findUnique({
-      where: { id: Number(account_id) },
-      include: { transactions: true }
-    });
+    const transactions: Transaction[] | null = await getTransactionsByAccountId(Number(account_id));
 
-    if (!account) {
-      const error: CustomError = new Error('Account not found.');
+    if (!transactions) {
+      const error: CustomError = new Error('Transactions not found.');
       error.status = 404;
       throw error;
     };
-
-    const transactionData: Record<number, Transaction> = account.transactions!.reduce((acc: any, transaction) => {
+    
+    const normalizedTransactions: Record<number, Transaction> = transactions.reduce((acc: any, transaction) => {
       acc[transaction.id] = transaction;
       return acc
     }, {});
 
-    res.status(200).json(transactionData);
+    res.status(200).json(normalizedTransactions);
 
   } catch (error) {
     console.error('Error occurred in getAccountTransactions.');
