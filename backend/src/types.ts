@@ -5,7 +5,7 @@ export interface CustomerWithOptionalDetails extends Customer {
   transactions?: Transaction[];
 };
 
-export type safeCustomerData = {
+export interface SafeCustomerData {
   id: number;
   name: string;
 

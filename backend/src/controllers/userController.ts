@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { prisma } from '../app';
-import { CustomerWithOptionalDetails, safeCustomerData } from '../types'
-import { CustomError } from '../middleware/errorHandler'
+import { CustomerWithOptionalDetails, SafeCustomerData } from '../types';
+import { CustomError } from '../middleware/errorHandler';
+import { getCustomerWithAccountsById } from '../services/queries';
 
 //the account number and user numbers match in this exercise, as such the account number is used to login a user
 //the implementation is irregular, but it is done this way to match the requirements of the project
@@ -11,10 +11,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
   try {
     const { accountNumber }: { accountNumber: number } = req.body;
 
-    const customerWithAccountIds: CustomerWithOptionalDetails | null = await prisma.customer.findUnique({
-      where: { id: accountNumber },
-      include: { accounts: true }
-    });
+    const customerWithAccountIds: CustomerWithOptionalDetails | null = await getCustomerWithAccountsById(accountNumber)
 
     if (!customerWithAccountIds) {
       const error: CustomError = new Error('Customer account not found.');
@@ -22,7 +19,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
       throw error;
     }
 
-    const safeCustomerData: safeCustomerData = {
+    const safeCustomerData: SafeCustomerData = {
       id: customerWithAccountIds.id,
       name: customerWithAccountIds.name,
       account_ids: customerWithAccountIds.accounts.map(account => account.id)
