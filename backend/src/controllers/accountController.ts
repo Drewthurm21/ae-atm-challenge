@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { prisma } from '../app';
 import { Transaction } from '@prisma/client';
 import { AccountWithOptionalDetails } from '../types';
 import { CustomError } from '../middleware/errorHandler';

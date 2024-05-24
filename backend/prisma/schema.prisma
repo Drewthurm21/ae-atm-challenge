@@ -26,7 +26,7 @@ model Account {
   customer_id  Int
   type         AccountType @default(CHECKING)
   balance      Decimal     @default(0.00) @db.Decimal(18, 2)
-  credit_limit Int         @default(0)
+  credit_limit Decimal     @default(0.00) @db.Decimal(18, 2)
   created_at   DateTime    @default(now())
   updated_at   DateTime    @updatedAt
 
