@@ -1,50 +1,29 @@
 import { PrismaClient } from '@prisma/client';
 import Decimal from 'decimal.js';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.TEST_DATABASE_URL,
+    },
+  },
+});
 
 describe('Transaction Model', () => {
-  let accountId: number;
-  let customerId: number;
+  const ACCOUNT_ID = 1;
+  const CUSTOMER_ID = 1;
+
   let transactionId: number;
 
-  beforeAll(async () => {
-    // Clear existing data
-    await prisma.transaction.deleteMany();
-    await prisma.account.deleteMany();
-    await prisma.customer.deleteMany();
-
-    // Create a customer and account for testing
-    const customer = await prisma.customer.create({
-      data: {
-        name: 'Test User',
-        email: 'test@example.com',
-        hashed_pass: 'hashedpassword123',
-      },
-    });
-
-    const account = await prisma.account.create({
-      data: {
-        customer_id: customer.id,
-        type: 'CHECKING',
-        balance: new Decimal(1000.00),
-        credit_limit: 500,
-      },
-    });
-
-    customerId = customer.id;
-    accountId = account.id;
-  });
-
-  afterAll(async () => {
+  afterAll(async () => { 
     await prisma.$disconnect();
   });
 
   test('create a new transaction', async () => {
     const transaction = await prisma.transaction.create({
       data: {
-        account_id: accountId,
-        customer_id: customerId,
+        account_id: ACCOUNT_ID,
+        customer_id: CUSTOMER_ID,
         type: 'DEPOSIT',
         credit: new Decimal(200.00),
         debit: new Decimal(0.00),
@@ -56,13 +35,13 @@ describe('Transaction Model', () => {
     transactionId = transaction.id;
 
     expect(transaction).toHaveProperty('id');
-    expect(transaction.account_id).toBe(accountId);
+    expect(transaction.account_id).toBe(ACCOUNT_ID);
     expect(transaction.credit.toString()).toBe('200');
   });
 
   test('read transactions', async () => {
     const transactions = await prisma.transaction.findMany({
-      where: { account_id: accountId },
+      where: { account_id: ACCOUNT_ID },
     });
 
     expect(transactions.length).toBeGreaterThan(0);
@@ -80,8 +59,8 @@ describe('Transaction Model', () => {
   test('create a withdrawal transaction', async () => {
     const transaction = await prisma.transaction.create({
       data: {
-        account_id: accountId,
-        customer_id: customerId,
+        account_id: ACCOUNT_ID,
+        customer_id: CUSTOMER_ID,
         type: 'WITHDRAWAL',
         credit: new Decimal(0.00),
         debit: new Decimal(100.00),
@@ -91,7 +70,7 @@ describe('Transaction Model', () => {
     });
 
     expect(transaction).toHaveProperty('id');
-    expect(transaction.account_id).toBe(accountId);
+    expect(transaction.account_id).toBe(ACCOUNT_ID);
     expect(transaction.net_effect.toString()).toBe('-100');
     expect(transaction.debit.toString()).toBe('100');
   });

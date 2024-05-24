@@ -1,40 +1,32 @@
 import { PrismaClient, AccountType } from '@prisma/client';
 import Decimal from 'decimal.js';
 
-const prisma = new PrismaClient();
-
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.TEST_DATABASE_URL,
+    },
+  },
+});
+ 
 describe('Prisma Account Model', () => {
   let accountId: number;
   let testAccountType = AccountType.CHECKING;
 
-  beforeAll(async () => {
-    await prisma.account.deleteMany();
-    await prisma.customer.deleteMany();
-
-  });
-
-  afterAll(async () => {
+  afterAll(async () => { 
     await prisma.$disconnect();
   });
 
   test('create a new account', async () => {
-    // Assuming a customer with ID 1 exists
-    const newCustomer = await prisma.customer.create({
-      data: {
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        hashed_pass: 'hashedpassword123',
-      },
-    });
-
     const newAccount = await prisma.account.create({
       data: {
-        customer_id: newCustomer.id,
+        customer_id: 1,
         type: testAccountType,
         balance: new Decimal(500),
         credit_limit: 1000,
       },
     });
+
     accountId = newAccount.id;
 
     expect(newAccount).toHaveProperty('id');

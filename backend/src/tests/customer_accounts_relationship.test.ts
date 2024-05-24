@@ -1,21 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 import Decimal from 'decimal.js';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.TEST_DATABASE_URL,
+    },
+  },
+});
 
 describe('Prisma Customer and Account Relationship', () => {
   const testAccountType = 'CHECKING';
-
   let customerId: number;
   let accountId: number;
   let alternateAccountId: number;
 
-  beforeAll(async () => {
-    await prisma.account.deleteMany();
-    await prisma.customer.deleteMany();
-  });
-
-  afterAll(async () => {
+  afterAll(async () => { 
     await prisma.$disconnect();
   });
 
@@ -23,7 +23,7 @@ describe('Prisma Customer and Account Relationship', () => {
     const newCustomer = await prisma.customer.create({
       data: {
         name: 'John Doe',
-        email: 'john.doe@email.com',
+        email: 'customer.account.reltionships@email.com',
         hashed_pass: 'hashedpassword123',
         accounts: {
           create: {
@@ -35,6 +35,7 @@ describe('Prisma Customer and Account Relationship', () => {
       },
       include: { accounts: true },
     });
+    
     customerId = newCustomer.id;
     accountId = newCustomer.accounts[0].id;
 
@@ -62,6 +63,7 @@ describe('Prisma Customer and Account Relationship', () => {
         credit_limit: 2000,
       },
     });
+
     alternateAccountId = newAccount.id;
 
     expect(newAccount).toHaveProperty('id');
@@ -88,8 +90,8 @@ describe('Prisma Customer and Account Relationship', () => {
     });
 
     expect(customer?.accounts.length).toBe(customerAccounts.length);
-    expect(customerAccounts[1].id).toBe(accountId);
-    expect(customerAccounts[0].id).toBe(alternateAccountId);
+    expect(customerAccounts[0].id).toBe(accountId);
+    expect(customerAccounts[1].id).toBe(alternateAccountId);
   });
 
 });
