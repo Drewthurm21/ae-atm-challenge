@@ -4,6 +4,7 @@ import { Transaction, TransactionStatus } from '@prisma/client';
 import { CustomError } from '../middleware/errorHandler';
 import { AccountWithDailyTotals, ValidatedTransactionState } from '../types';
 import { validateDepositTransaction, validateWithdrawalTransaction } from '../services/transactionValidations';
+import { handleUpdatesForTransaction } from '../services/transactionUtils';
 import { 
   createPendingTransaction,
   getAccountWithTodayDailyTotalsById,
@@ -37,31 +38,7 @@ export const handleDeposit = async (req: Request, res: Response, next: NextFunct
     }
 
     //Handle necessary updates
-    const [updatedAccount, completedTransaction] = await prisma.$transaction(async (prisma) => {
-        const updatedDailyTotals = await updateDailyTotals(pendingTransaction!);
-        if (!updatedDailyTotals) {
-          const error: CustomError = new Error('Deposit failed. Daily totals update failed.');
-          error.status = 500;
-          throw error;
-        }
-
-        const updatedAccount = await updateAccountBalance(pendingTransaction!);
-        if (!updatedAccount) {
-          const error: CustomError = new Error('Deposit failed. Account balance update failed.');
-          error.status = 500;
-          throw error;
-        }
-        
-        const completedTransaction = await updateTransactionStatus(pendingTransaction!.id, TransactionStatus.COMPLETED);
-        if (!completedTransaction) {
-          const error: CustomError = new Error('Deposit failed. Transaction status update failed.');
-          error.status = 500;
-          throw error;
-        }
-
-        return [updatedAccount, completedTransaction];
-    });
-
+    const [updatedAccount, completedTransaction] = await handleUpdatesForTransaction(pendingTransaction, account);
 
     res.status(201).json({ transaction: completedTransaction, account: updatedAccount });
     
@@ -106,31 +83,8 @@ export const handleWithdrawal = async (req: Request, res: Response, next: NextFu
       throw error;
     }
     
-    const [updatedAccount, completedTransaction] = await prisma.$transaction(async (prisma) => {
-      const updatedDailyTotals = await updateDailyTotals(pendingTransaction!);
-      if (!updatedDailyTotals) {
-        const error: CustomError = new Error('Deposit failed. Daily totals update failed.');
-        error.status = 500;
-        throw error;
-      }
-      
-      const updatedAccount = await updateAccountBalance(pendingTransaction!);
-      if (!updatedAccount) {
-        const error: CustomError = new Error('Deposit failed. Account balance update failed.');
-        error.status = 500;
-        throw error;
-      }
-      
-      const completedTransaction = await updateTransactionStatus(pendingTransaction!.id, TransactionStatus.COMPLETED);
-      if (!completedTransaction) {
-        const error: CustomError = new Error('Deposit failed. Transaction status update failed.');
-        error.status = 500;
-        throw error;
-      }
-
-      return [updatedAccount, completedTransaction];
-    });
-    
+    //Handle necessary updates
+    const [updatedAccount, completedTransaction] = await handleUpdatesForTransaction(pendingTransaction, account);
 
     res.status(201).json({ transaction: completedTransaction, account: updatedAccount });
 
