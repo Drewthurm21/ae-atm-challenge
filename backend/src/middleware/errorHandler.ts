@@ -1,4 +1,3 @@
-import { error } from 'console';
 import { Request, Response, NextFunction } from 'express';
 
 export interface CustomError extends Error {

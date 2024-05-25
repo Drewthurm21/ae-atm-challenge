@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { prisma } from '../app';
 import { Transaction, TransactionStatus } from '@prisma/client';
 import { CustomError } from '../middleware/errorHandler';
 import { AccountWithDailyTotals, ValidatedTransactionState } from '../types';
@@ -8,8 +7,6 @@ import { handleUpdatesForTransaction } from '../services/transactionUtils';
 import { 
   createPendingTransaction,
   getAccountWithTodayDailyTotalsById,
-  updateAccountBalance,
-  updateDailyTotals,
   updateTransactionStatus
 } from '../services/queries';
 
@@ -46,7 +43,7 @@ export const handleDeposit = async (req: Request, res: Response, next: NextFunct
     console.error('Error occurred in handleDeposit.');
 
     if (pendingTransaction) {
-      updateTransactionStatus(pendingTransaction.id, TransactionStatus.FAILED);
+      updateTransactionStatus(pendingTransaction, TransactionStatus.FAILED);
     }
     
     next(error);
@@ -91,7 +88,7 @@ export const handleWithdrawal = async (req: Request, res: Response, next: NextFu
   } catch (error) {
     console.error('Error occurred in handleWithdrawal.');
     if (pendingTransaction) {
-      updateTransactionStatus(pendingTransaction.id, TransactionStatus.FAILED);
+      updateTransactionStatus(pendingTransaction, TransactionStatus.FAILED);
     }
     next(error);
   }

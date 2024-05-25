@@ -121,11 +121,15 @@ export const createPendingTransaction = async (customer_id: number, account_id: 
     });
 };
 
-export const updateTransactionStatus = async (transaction_id: number, status: TransactionStatus): Promise<Transaction | null> => {
+export const updateTransactionStatus = async (transaction: Transaction, status: TransactionStatus): Promise<Transaction | null> => {
+    if (status === TransactionStatus.FAILED) {
+        transaction.net_effect.mul(0);
+    };
     return await prisma.transaction.update({
-        where: { id: transaction_id },
+        where: { id: transaction.id },
         data: {
             status: status,
+            net_effect: transaction.net_effect,
             updated_at: new Date(),
         },
     });
