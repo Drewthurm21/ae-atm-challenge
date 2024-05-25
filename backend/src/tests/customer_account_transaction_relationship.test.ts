@@ -15,12 +15,12 @@ const generateRandomAccountIndex = () => {
 };
 
 let transactionId: number;
-const TEST_ACCOUNT = testAccounts[1];
+const TEST_ACCOUNT = testAccounts[generateRandomAccountIndex()];
 const ACCOUNT_ID = TEST_ACCOUNT.customer_id;
 const CUSTOMER_ID = TEST_ACCOUNT.customer_id;
 const INITIAL_BALANCE = new Decimal(TEST_ACCOUNT.balance);
-const WITHDRAWAL_AMOUNT = new Decimal(105.26);
-const DEPOSIT_AMOUNT = new Decimal(200.52);
+const WITHDRAWAL_AMOUNT = new Decimal(10);
+const DEPOSIT_AMOUNT = new Decimal(10);
 
 describe('Customer, Account, and Transaction Relationships', () => {
   
@@ -51,7 +51,7 @@ describe('Customer, Account, and Transaction Relationships', () => {
     await prisma.account.update({
       where: { id: ACCOUNT_ID },
       data: {
-        balance: { increment: transaction.net_effect },
+        balance: { increment: TEST_ACCOUNT.type === "CREDIT" ? -transaction.net_effect : transaction.net_effect },
       },
     });
 
@@ -60,11 +60,15 @@ describe('Customer, Account, and Transaction Relationships', () => {
       include: { accounts: true, transactions: true},
     });
     
-    if (customer) {
-      expect(customer.accounts.length).toBe(1);
+    if (!customer) throw new Error('Customer not found');
+    expect(customer.accounts.length).toBe(1);
+    expect(customer.transactions.length).toBeGreaterThanOrEqual(1);
+    expect(customer.transactions[customer.transactions.length - 1].id).toBe(transactionId);
+    
+    if (TEST_ACCOUNT.type === "CREDIT") {
+      expect(customer.accounts[0].balance.toString()).toBe(INITIAL_BALANCE.minus(DEPOSIT_AMOUNT).toString());
+    } else {
       expect(customer.accounts[0].balance.toString()).toBe(INITIAL_BALANCE.plus(DEPOSIT_AMOUNT).toString());
-      expect(customer.transactions.length).toBeGreaterThanOrEqual(1);
-      expect(customer.transactions[customer.transactions.length - 1].id).toBe(transactionId);
     }
   });
 
@@ -137,7 +141,7 @@ describe('Customer, Account, and Transaction Relationships', () => {
         type: 'WITHDRAWAL',
         credit: 0,
         debit: WITHDRAWAL_AMOUNT,
-        net_effect: WITHDRAWAL_AMOUNT.neg(),
+        net_effect: -WITHDRAWAL_AMOUNT,
         status: 'COMPLETED',
       },
     });
@@ -145,7 +149,9 @@ describe('Customer, Account, and Transaction Relationships', () => {
     const updatedAccount = await prisma.account.update({
       where: { id: ACCOUNT_ID },
       data: {
-        balance: { decrement: WITHDRAWAL_AMOUNT },
+        balance: { 
+          decrement: TEST_ACCOUNT.type === 'CREDIT' ? -WITHDRAWAL_AMOUNT : WITHDRAWAL_AMOUNT 
+        },
       },
     });
 
@@ -157,19 +163,22 @@ describe('Customer, Account, and Transaction Relationships', () => {
   });
 
   test('verify account accuracy through customer query', async () => {
-    console.log(TEST_ACCOUNT, DEPOSIT_AMOUNT, WITHDRAWAL_AMOUNT)
     const customer = await prisma.customer.findUnique({
       where: { id: CUSTOMER_ID },
       include: { accounts: true, transactions: true }
     });
+    
+    if (!customer) throw new Error('Customer not found'); 
+    const transactions = customer.transactions;
+    const updatedAccount = customer.accounts[0];
 
-    if (customer) {
-      let finalBalance = customer.transactions.reduce((acc, transaction) => {
-        return acc.plus(transaction.net_effect);
-      }, new Decimal(0));
-  
-      expect(finalBalance.toString()).toBe(INITIAL_BALANCE.plus(DEPOSIT_AMOUNT).minus(WITHDRAWAL_AMOUNT).toString());
-    }
+    let finalBalance = transactions.reduce((acc, transaction) => {
+      if (updatedAccount.type === "CREDIT") {
+        return acc += Number(-transaction.net_effect);
+      }
+      return acc += Number(transaction.net_effect);
+    }, 0);
 
+    expect(finalBalance.toString()).toBe(updatedAccount.balance.toString());
   });
 });

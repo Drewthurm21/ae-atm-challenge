@@ -1,4 +1,4 @@
-FROM postgres:15.1-alpine
+FROM postgres:15.7-alpine
 
 LABEL author="Your Name"
 LABEL description="Postgres Image for challenge"

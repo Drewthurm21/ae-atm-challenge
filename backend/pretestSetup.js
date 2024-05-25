@@ -17,7 +17,6 @@ const prisma = new PrismaClient({
 const setup = async () => {
   try {
     console.log('Spinning up a fresh test db');
-    execSync(`docker exec challenge_db psql -U user -d postgres -c "DROP DATABASE IF EXISTS testdb;"`, { stdio: 'inherit' });
     execSync(`docker exec challenge_db psql -U user -d postgres -c "CREATE DATABASE testdb;"`, { stdio: 'inherit' });
 
     console.log('Running migrations');
