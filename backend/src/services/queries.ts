@@ -61,7 +61,7 @@ export const getAccountWithTodayDailyTotalsById = async (id: number): Promise<Ac
     });
 };
 
-export const applyDepositToAccount = async (transaction: Transaction): Promise<Account | null> => {
+export const updateAccountBalance = async (transaction: Transaction): Promise<Account | null> => {
     const { account_id, credit, debit } = transaction;
     const netEffect = credit.minus(debit);
 
@@ -69,22 +69,14 @@ export const applyDepositToAccount = async (transaction: Transaction): Promise<A
         where: { id: account_id }
     });
 
-    if (account && account.type === 'CREDIT') {
-        return await prisma.account.update({
-            where: { id: account_id },
-            data: {
-                balance: {
-                    decrement: netEffect,
-                },
-            },
-        });
-    };
+    if (!account) return null;
 
+    let balanceUpdate = account.type === "CREDIT" ? "decrement" : "increment";
     return await prisma.account.update({
         where: { id: account_id },
         data: {
             balance: {
-                increment: netEffect,
+                [balanceUpdate]: netEffect,
             },
         },
     });
@@ -138,4 +130,4 @@ export const updateTransactionStatus = async (transaction_id: number, status: Tr
         },
     });
 };
-  
+

@@ -2,12 +2,12 @@ import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../app';
 import { Transaction, TransactionStatus } from '@prisma/client';
 import { CustomError } from '../middleware/errorHandler';
-import { AccountWithDailyTotals, ValidatedTransaction } from '../types';
-import { validateDepositTransaction } from '../services/transactionValidations';
+import { AccountWithDailyTotals, ValidatedTransactionState } from '../types';
+import { validateDepositTransaction, validateWithdrawalTransaction } from '../services/transactionValidations';
 import { 
   createPendingTransaction,
   getAccountWithTodayDailyTotalsById,
-  applyDepositToAccount,
+  updateAccountBalance,
   updateDailyTotals,
   updateTransactionStatus
 } from '../services/queries';
@@ -23,21 +23,21 @@ export const handleDeposit = async (req: Request, res: Response, next: NextFunct
 
     if (!pendingTransaction || !account) {
       const error: CustomError = new Error('Deposit failed. Account not found.');
-      error.status = 400;
+      error.status = 404;
       throw error;
     }
 
     //Validate the transaction
-    const validatedTransaction: ValidatedTransaction = validateDepositTransaction(pendingTransaction, account);
-    if (!validatedTransaction.isValid) {
+    const ValidatedTransaction: ValidatedTransactionState = validateDepositTransaction(pendingTransaction, account);
+    if (ValidatedTransaction.hasErrors) {
       const error: CustomError = new Error('Deposit failed. Validation errors.');
       error.status = 400;
-      error.errors = validatedTransaction.errors;
+      error.errors = ValidatedTransaction.errors;
       throw error;
     }
 
     //Handle necessary updates
-    const updatedAccount = await prisma.$transaction(async (prisma) => {
+    const [updatedAccount, completedTransaction] = await prisma.$transaction(async (prisma) => {
         const updatedDailyTotals = await updateDailyTotals(pendingTransaction!);
         if (!updatedDailyTotals) {
           const error: CustomError = new Error('Deposit failed. Daily totals update failed.');
@@ -45,22 +45,23 @@ export const handleDeposit = async (req: Request, res: Response, next: NextFunct
           throw error;
         }
 
-        const updatedAccount = await applyDepositToAccount(pendingTransaction!);
+        const updatedAccount = await updateAccountBalance(pendingTransaction!);
         if (!updatedAccount) {
           const error: CustomError = new Error('Deposit failed. Account balance update failed.');
           error.status = 500;
           throw error;
         }
+        
+        const completedTransaction = await updateTransactionStatus(pendingTransaction!.id, TransactionStatus.COMPLETED);
+        if (!completedTransaction) {
+          const error: CustomError = new Error('Deposit failed. Transaction status update failed.');
+          error.status = 500;
+          throw error;
+        }
 
-        return updatedAccount;
+        return [updatedAccount, completedTransaction];
     });
 
-    const completedTransaction = await updateTransactionStatus(pendingTransaction!.id, TransactionStatus.COMPLETED);
-    if (!completedTransaction) {
-      const error: CustomError = new Error('Deposit failed. Transaction status update failed.');
-      error.status = 500;
-      throw error;
-    }
 
     res.status(201).json({ transaction: completedTransaction, account: updatedAccount });
     
@@ -77,24 +78,68 @@ export const handleDeposit = async (req: Request, res: Response, next: NextFunct
 
 
 export const handleWithdrawal = async (req: Request, res: Response, next: NextFunction) => {
+  const { customer_id, account_id, credit, debit } = req.body;
+  let pendingTransaction: Transaction | null = null;
+
+  if (credit % 5 !== 0) {
+    const error: CustomError = new Error('Withdrawal failed. Amount must be a multiple of 5.');
+    error.status = 400;
+    throw error;
+  }
 
   try {
-    //create a new transaction
+    pendingTransaction = await createPendingTransaction(customer_id, account_id, credit, debit);
+    const account: AccountWithDailyTotals | null = await getAccountWithTodayDailyTotalsById(account_id);
 
-    //get account with daily totals
+    if (!pendingTransaction || !account) {
+      const error: CustomError = new Error('Withdrawal failed. Account not found.');
+      error.status = 400;
+      throw error;
+    }
 
     //validate the transaction
+    const validatedTransaction: ValidatedTransactionState = validateWithdrawalTransaction(pendingTransaction, account);
+    if (validatedTransaction.hasErrors) {
+      const error: CustomError = new Error('Withdrawal failed. Validation errors.');
+      error.status = 400;
+      error.errors = validatedTransaction.errors;
+      throw error;
+    }
+    
+    const [updatedAccount, completedTransaction] = await prisma.$transaction(async (prisma) => {
+      const updatedDailyTotals = await updateDailyTotals(pendingTransaction!);
+      if (!updatedDailyTotals) {
+        const error: CustomError = new Error('Deposit failed. Daily totals update failed.');
+        error.status = 500;
+        throw error;
+      }
+      
+      const updatedAccount = await updateAccountBalance(pendingTransaction!);
+      if (!updatedAccount) {
+        const error: CustomError = new Error('Deposit failed. Account balance update failed.');
+        error.status = 500;
+        throw error;
+      }
+      
+      const completedTransaction = await updateTransactionStatus(pendingTransaction!.id, TransactionStatus.COMPLETED);
+      if (!completedTransaction) {
+        const error: CustomError = new Error('Deposit failed. Transaction status update failed.');
+        error.status = 500;
+        throw error;
+      }
 
-    //update daily totals
+      return [updatedAccount, completedTransaction];
+    });
+    
 
-    //update account balance
-
-    //update transaction status
-
-    //send response
+    res.status(201).json({ transaction: completedTransaction, account: updatedAccount });
 
   } catch (error) {
     console.error('Error occurred in handleWithdrawal.');
+    if (pendingTransaction) {
+      updateTransactionStatus(pendingTransaction.id, TransactionStatus.FAILED);
+    }
     next(error);
   }
 };
+

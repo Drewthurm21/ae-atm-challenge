@@ -20,7 +20,7 @@ export interface AccountWithDailyTotals extends Account {
   daily_totals: DailyTotal[];
 };
 
-export interface ValidatedTransaction {
-  isValid: boolean;
+export interface ValidatedTransactionState {
+  hasErrors: boolean;
   errors: string[];
 }
