@@ -35,7 +35,7 @@ const testAccounts = [
   {
     customer_id: 1,
     type: 'CHECKING',
-    balance: 100000000,
+    balance: 1000000,
     credit_limit: 0,
   },
   {
@@ -75,9 +75,9 @@ const testTransactions = [
     account_id: 1,
     customer_id: 1,
     type: 'DEPOSIT',
-    credit: 100000000,
+    credit: 1000000,
     debit: 0,
-    net_effect: 100000000,
+    net_effect: 1000000,
     status: 'COMPLETED',
   },
   {
@@ -95,7 +95,7 @@ const testTransactions = [
     type: 'WITHDRAWAL',
     credit: 0,
     debit: 2000,
-    net_effect: 2000,
+    net_effect: -2000,
     status: 'COMPLETED',
   },
   {
@@ -113,7 +113,7 @@ const testTransactions = [
     type: 'DEPOSIT',
     credit: 510,
     debit: 0,
-    net_effect: 510,
+    net_effect: 0,
     status: 'FAILED',
   },
   {
@@ -140,7 +140,7 @@ const testTransactions = [
     type: 'DEPOSIT',
     credit: 50000,
     debit: 0,
-    net_effect: -50000,
+    net_effect: 50000,
     status: 'COMPLETED',
   },
   {

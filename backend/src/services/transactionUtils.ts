@@ -20,7 +20,7 @@ export const handleUpdatesForTransaction = async (pendingTransaction: Transactio
       throw error;
     }
     
-    const completedTransaction = await updateTransactionStatus(pendingTransaction!.id, TransactionStatus.COMPLETED);
+    const completedTransaction = await updateTransactionStatus(pendingTransaction, TransactionStatus.COMPLETED);
     if (!completedTransaction) {
       const error: CustomError = new Error('Deposit failed. Transaction status update failed.');
       error.status = 500;

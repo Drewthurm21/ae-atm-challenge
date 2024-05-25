@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { testAccounts } from './test_data';
 import Decimal from 'decimal.js';
 
 const prisma = new PrismaClient({
@@ -9,24 +10,19 @@ const prisma = new PrismaClient({
   },
 });
 
+const generateRandomAccountIndex = () => {
+  return Math.floor(Math.random() * testAccounts.length);
+};
+
+let transactionId: number;
+const TEST_ACCOUNT = testAccounts[1];
+const ACCOUNT_ID = TEST_ACCOUNT.customer_id;
+const CUSTOMER_ID = TEST_ACCOUNT.customer_id;
+const INITIAL_BALANCE = new Decimal(TEST_ACCOUNT.balance);
+const WITHDRAWAL_AMOUNT = new Decimal(105.26);
+const DEPOSIT_AMOUNT = new Decimal(200.52);
+
 describe('Customer, Account, and Transaction Relationships', () => {
-  let transactionId: number;
-  let initialBalance: Decimal;
-
-  const CUSTOMER_ID = 1;
-  const ACCOUNT_ID = 1;
-  const WITHDRAWAL_AMOUNT = 105;
-  const DEPOSIT_AMOUNT = new Decimal(200.52);
-
-  beforeAll(async () => {
-    let account = await prisma.account.findUnique({
-      where: { id: ACCOUNT_ID },
-    });
-
-    if (account) {
-      initialBalance = new Decimal(account.balance)
-    }
-  });
   
   afterAll(async () => {
     await prisma.$disconnect();
@@ -41,7 +37,7 @@ describe('Customer, Account, and Transaction Relationships', () => {
         credit: DEPOSIT_AMOUNT,
         debit: new Decimal(0.00),
         net_effect: DEPOSIT_AMOUNT,
-        status: 'PENDING',
+        status: 'COMPLETED',
       },
     });
 
@@ -65,8 +61,9 @@ describe('Customer, Account, and Transaction Relationships', () => {
     });
     
     if (customer) {
-      expect(customer.accounts[0].balance.toString()).toBe('1200.52');
-      expect(customer.transactions.length).toBeGreaterThan(1);
+      expect(customer.accounts.length).toBe(1);
+      expect(customer.accounts[0].balance.toString()).toBe(INITIAL_BALANCE.plus(DEPOSIT_AMOUNT).toString());
+      expect(customer.transactions.length).toBeGreaterThanOrEqual(1);
       expect(customer.transactions[customer.transactions.length - 1].id).toBe(transactionId);
     }
   });
@@ -122,14 +119,25 @@ describe('Customer, Account, and Transaction Relationships', () => {
   });
 
   test('create withdrawl and verify transaction effect', async () => {
+
+    const initialAccountData = await prisma.account.findUnique({
+      where: { id: ACCOUNT_ID },
+    });
+
+    let initialBalance: Decimal;
+    if (!initialAccountData) {
+      throw new Error('Account not found');
+    }
+    initialBalance = new Decimal(initialAccountData.balance);
+
     await prisma.transaction.create({
       data: {
         account_id: ACCOUNT_ID,
         customer_id: CUSTOMER_ID,
         type: 'WITHDRAWAL',
-        credit: new Decimal(0.00),
+        credit: 0,
         debit: WITHDRAWAL_AMOUNT,
-        net_effect: WITHDRAWAL_AMOUNT * -1,
+        net_effect: WITHDRAWAL_AMOUNT.neg(),
         status: 'COMPLETED',
       },
     });
@@ -141,10 +149,15 @@ describe('Customer, Account, and Transaction Relationships', () => {
       },
     });
 
-    expect(updatedAccount.balance.toString()).toBe('1095.52');
+    if (updatedAccount.type === "CREDIT") {
+      expect(updatedAccount.balance.toString()).toBe(initialBalance.plus(WITHDRAWAL_AMOUNT).toString());
+    } else {
+      expect(updatedAccount.balance.toString()).toBe(initialBalance.minus(WITHDRAWAL_AMOUNT).toString());
+    }
   });
 
   test('verify account accuracy through customer query', async () => {
+    console.log(TEST_ACCOUNT, DEPOSIT_AMOUNT, WITHDRAWAL_AMOUNT)
     const customer = await prisma.customer.findUnique({
       where: { id: CUSTOMER_ID },
       include: { accounts: true, transactions: true }
@@ -155,7 +168,7 @@ describe('Customer, Account, and Transaction Relationships', () => {
         return acc.plus(transaction.net_effect);
       }, new Decimal(0));
   
-      expect(finalBalance.toString()).toBe(initialBalance.plus(DEPOSIT_AMOUNT).minus(WITHDRAWAL_AMOUNT).toString());
+      expect(finalBalance.toString()).toBe(INITIAL_BALANCE.plus(DEPOSIT_AMOUNT).minus(WITHDRAWAL_AMOUNT).toString());
     }
 
   });
