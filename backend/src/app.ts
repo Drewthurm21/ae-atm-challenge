@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { errorHandler } from './middleware/errorHandler';
 import userRoutes from './routes/userRoutes';
 import accountRoutes from './routes/accountRoutes'
+import transactionRoutes from './routes/transactionRoutes';
 
 const app = express();
 
@@ -25,11 +26,7 @@ app.use(bodyParser.json());
 // Routers
 app.use('/users', userRoutes);
 app.use('/accounts', accountRoutes);
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
+app.use('/transactions', transactionRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
