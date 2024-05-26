@@ -23,4 +23,5 @@ export interface AccountWithDailyTotals extends Account {
 export interface ValidatedTransactionState {
   hasErrors: boolean;
   errors: string[];
-}
+};
+

@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 
-import userSlice from './userSlice';
+import authData from './auth/authReducer';
 
 const store = configureStore({
   reducer: {
-    userData: userSlice,
+    userAuth: authData,
   },
   devTools: process.env.NODE_ENV !== 'production',
 });

@@ -1,4 +1,4 @@
-import { Account, Customer, DailyTotal, Transaction } from '@prisma/client';
+import { Account, Customer, DailyTotal, Transaction } from './prismaTypes';
 
 export interface CustomerWithOptionalDetails extends Customer {
   accounts: Account[];
@@ -23,4 +23,9 @@ export interface AccountWithDailyTotals extends Account {
 export interface ValidatedTransactionState {
   hasErrors: boolean;
   errors: string[];
+}
+
+export interface ApiResponseError {
+  errors: string[];
+  message: string;
 }
