@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
@@ -19,7 +20,16 @@ const prisma = new PrismaClient({
   },
 });
 
+
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, 
+  optionsSuccessStatus: 204
+};
+
 // Middleware
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 

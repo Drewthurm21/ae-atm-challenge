@@ -7,7 +7,7 @@ CREATE TABLE "Account" (
     "customer_id" INTEGER NOT NULL,
     "type" "AccountType" NOT NULL DEFAULT 'CHECKING',
     "balance" DECIMAL(18,2) NOT NULL DEFAULT 0,
-    "credit_limit" INTEGER NOT NULL DEFAULT 0,
+    "credit_limit" DECIMAL(18,2) NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 

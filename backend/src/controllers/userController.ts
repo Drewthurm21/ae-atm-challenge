@@ -9,9 +9,9 @@ import { getCustomerWithAccountsById } from '../services/queries';
 export const loginUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
   try {
-    const { accountNumber }: { accountNumber: number } = req.body;
+    const { account_id }: { account_id: number } = req.body;
 
-    const customerWithAccountIds: CustomerWithOptionalDetails | null = await getCustomerWithAccountsById(accountNumber)
+    const customerWithAccountIds: CustomerWithOptionalDetails | null = await getCustomerWithAccountsById(account_id)
 
     if (!customerWithAccountIds) {
       const error: CustomError = new Error('Customer account not found.');

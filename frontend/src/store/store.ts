@@ -5,7 +5,7 @@ import userSlice from './userSlice';
 
 const store = configureStore({
   reducer: {
-    user: userSlice,
+    userData: userSlice,
   },
   devTools: process.env.NODE_ENV !== 'production',
 });

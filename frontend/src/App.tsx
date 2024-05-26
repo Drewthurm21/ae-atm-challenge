@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "./store/store.ts";
+import { loginUser, logoutUser } from "./store/userSlice.ts";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const dispatch = useAppDispatch();
+
+  const user = useSelector((state: RootState) => state.userData.user);
+  const status = useSelector(
+    (state: RootState) => state.userData.loadingStatus
+  );
+
+  useEffect(() => {
+    dispatch(loginUser(1));
+  }, [dispatch]);
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  if (status === "failed") {
+    return <div>Error occurred while logging in</div>;
+  }
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <div>USER</div>
+      {user && (
+        <>
+          <div>{user.id}</div>
+          <div>{user.name}</div>
+          <div>{user.account_ids}</div>
+          <div onClick={handleLogout}>CLICK ME TO LOGOUT</div>
+        </>
+      )}
     </>
-  )
+  );
 }
-
-export default App
+export default App;

@@ -1,42 +1,44 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { SafeCustomerData } from '@shared/types';
 import axios from 'axios';
 
-interface ExampleState {
-  data: any;
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
+interface UserState {
+  user: SafeCustomerData | null;
+  loadingStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
-const initialState: ExampleState = {
-  data: null,
-  status: 'idle',
-  error: null,
+const initialState: UserState = {
+  user: null,
+  loadingStatus: 'idle',
 };
 
 
-export const loginUser = createAsyncThunk('example/fetchData', async (account_id) => {
-  const response = await axios.post('http://localhost:3000/login', { account_id });
+export const loginUser = createAsyncThunk('users/userLogin', async (id: number) => {
+  const response = await axios.post('http://localhost:3000/users/login', { account_id: id });
   return response.data;
 });
 
+
 const userSlice = createSlice({
-  name: 'example',
+  name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    logoutUser: (state) => {
+      state.user = null;
+      state.loadingStatus = 'idle';
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
-        state.status = 'loading';
+        state.loadingStatus = 'loading';
       })
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<any>) => {
-        state.status = 'succeeded';
-        state.data = action.payload;
+        state.loadingStatus = 'succeeded';
+        state.user = action.payload;
       })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message ?? 'Something went wrong';
-      });
   },
 });
 
+export const { logoutUser } = userSlice.actions;
 export default userSlice.reducer;
