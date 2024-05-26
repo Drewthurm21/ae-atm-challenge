@@ -29,14 +29,14 @@ function App() {
 
   return (
     <>
-      <div>USER</div>
       {user && (
-        <>
+        <div className="flex flex-col w-full h-[100vh] items-center justify-center">
+          <div>USER</div>
           <div>{user.id}</div>
           <div>{user.name}</div>
           <div>{user.account_ids}</div>
           <div onClick={handleLogout}>CLICK ME TO LOGOUT</div>
-        </>
+        </div>
       )}
     </>
   );
