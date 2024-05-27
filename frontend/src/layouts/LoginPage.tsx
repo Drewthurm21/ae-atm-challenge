@@ -1,19 +1,17 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import useAuth from "../hooks/useAuth";
 
 export default function LoginPage() {
+  const { loginUser, logoutUser } = useAuth();
   const [loginFormData, setLoginFormData] = useState({ account_id: "" });
 
   const handleFormUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setLoginFormData({
-      ...loginFormData,
-      [name]: value,
-    });
+    setLoginFormData({ ...loginFormData, [name]: value });
   };
 
-  const sendLoginRequest = () => {
-    console.log(loginFormData);
-    console.log("Sending login request...");
+  const sendLoginRequest = async () => {
+    await loginUser(+loginFormData.account_id);
   };
 
   return (
@@ -27,6 +25,7 @@ export default function LoginPage() {
         onChange={handleFormUpdate}
       />
       <button onClick={sendLoginRequest}>Login</button>
+      <button onClick={logoutUser}>logout</button>
     </div>
   );
 }

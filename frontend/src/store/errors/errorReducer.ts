@@ -2,19 +2,19 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ErrorStateShape } from './errorTypes';
 
 const initialState: ErrorStateShape = {
-  errors: [],
+  messages: [],
 };
 
 
 const errorState = createSlice({
-  name: 'errors',
+  name: 'messages',
   initialState,
   reducers: {
     setReduxErrors: (state, action: PayloadAction<any>) => {
-      state.errors = action.payload;
+      state.messages = [...action.payload];
     },
     clearReduxErrors: (state) => {
-      state.errors = null;
+      state.messages = null;
     }
   },
 });

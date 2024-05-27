@@ -1,21 +1,26 @@
+import axios from 'axios';
 import { useAppDispatch, useAppSelector } from './reduxHooks';
-import { loginUserThunk } from '../store/auth/authThunks';
 import { RootState } from '../store/store';
+import { loginUser as loginUserAction, logoutUser as logoutUserAction} from '../store/auth/authReducer';
+import { handleApiError } from '../api/apiUtils';
 
 const useAuth = () => {
   const dispatch = useAppDispatch();
   const { user, loadingStatus } = useAppSelector((state: RootState) => state.userAuth);
 
-  const loginUser = async (id: number) => {
+  const loginUser = async (id: number) =>  {
     try {
-      await dispatch(loginUserThunk(id));
-    } catch (err) {
-      console.error(err);
-      // FINISH LATER: HANDLE ERROR ONCE ERROR SLICE IS WRITTEN.
+      let res = await axios.post('http://localhost:3000/users/login', { account_id: id });
+      dispatch(loginUserAction(res.data));
+    } catch(error) {
+      console.log('error in loginUser', error);
+      handleApiError(error, dispatch);
     }
   };
 
-  return { user, loadingStatus, loginUser };
+  const logoutUser = () => dispatch(logoutUserAction());
+  
+  return { user, loadingStatus, loginUser, logoutUser };
 };
 
 export default useAuth;

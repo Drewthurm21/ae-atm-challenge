@@ -1,5 +1,5 @@
 
 
 export interface ErrorStateShape {
-  errors: string[] | null;
+  messages: string[] | null;
 }
