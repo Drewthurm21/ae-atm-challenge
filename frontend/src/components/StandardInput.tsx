@@ -12,17 +12,13 @@ type StandardInputProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const sanitizeNumberInput = (value: string) => {
-  return value.replace(/\D/gi, "");
-};
-
 export default function StandardInput({
   name = "",
-  label = "",
   value = "",
   placeholder = "",
   className = "",
-  mask = sanitizeNumberInput,
+  label,
+  mask,
   onChange,
 }: StandardInputProps) {
   const [inputValue, setInputValue] = useState(value);
