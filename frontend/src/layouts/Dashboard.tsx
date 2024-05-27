@@ -5,27 +5,15 @@ export default function Dashboard() {
   return (
     <PageWrapper>
       <div className={standardFormClasses}>
-        <div className="grid gap-32 grid-cols-1 lg:grid-cols-3">
+        <div className="grid gap-44 grid-cols-1 lg:grid-cols-3">
           <p className="text-xl self-start font-semibold mb-2">
             Select an option
           </p>
         </div>
         <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
-          <DashboardCard
-            title="Withdrawal"
-            subtitle="Withdrawal cash"
-            href="/withdrawal"
-          />
-          <DashboardCard
-            title="Check Balance"
-            subtitle="Check your balance"
-            href="/balance"
-          />
-          <DashboardCard
-            title="Deposit"
-            subtitle="Make a deposit"
-            href="/deposit"
-          />
+          {dashboardCardData.map((card) => (
+            <DashboardCard key={card.title} {...card} />
+          ))}
         </div>
       </div>
     </PageWrapper>
@@ -54,3 +42,21 @@ const DashboardCard = ({ title, subtitle, href }: CardProps) => {
     </a>
   );
 };
+
+const dashboardCardData = [
+  {
+    title: "Withdrawal",
+    subtitle: "Withdrawal cash",
+    href: "/withdrawal",
+  },
+  {
+    title: "Check Balance",
+    subtitle: "Check your balance",
+    href: "/balance",
+  },
+  {
+    title: "Deposit",
+    subtitle: "Make a deposit",
+    href: "/deposit",
+  },
+];

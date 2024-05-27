@@ -4,7 +4,7 @@ CREATE TABLE "DailyTotal" (
     "account_id" INTEGER NOT NULL,
     "date" DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "total_deposit" DECIMAL(18,2) NOT NULL DEFAULT 0.00,
-    "total_witdrawal" DECIMAL(18,2) NOT NULL DEFAULT 0.00,
+    "total_withdrawal" DECIMAL(18,2) NOT NULL DEFAULT 0.00,
     "total_transfer" DECIMAL(18,2) NOT NULL DEFAULT 0.00,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
