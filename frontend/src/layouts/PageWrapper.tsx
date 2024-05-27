@@ -9,7 +9,7 @@ export default function PageWrapper({ children }: { children: ReactNode }) {
       <header className="p-4">
         <h2 className="text-2xl font-bold">Welcome to the Banking App</h2>
       </header>
-      <main className="p-8 fixed inset-0 z-50 grid place-items-center overflow-y-scroll cursor-pointer">
+      <main className="p-8 fixed inset-0 grid place-items-center overflow-y-scroll cursor-pointer">
         {children}
       </main>
     </div>

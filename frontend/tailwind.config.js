@@ -9,7 +9,15 @@ export default {
     extend: {
       backgroundImage: {
         'modal-overlay': "url('./src/assets/images/modalOverlay.png')",
-      }
+      },
+      colors:
+      {
+        'accent': '#82FFFF',
+        'primary': {
+          100: '#824BFF',
+          200: '#6500B0',
+        },
+      },
     },
   },
   plugins: [],

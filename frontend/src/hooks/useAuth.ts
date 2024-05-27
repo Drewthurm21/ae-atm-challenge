@@ -14,10 +14,12 @@ const useAuth = () => {
     try {
       let res = await axios.post('http://localhost:3000/users/login', { account_id: id });
       dispatch(loginUserAction(res.data));
+      return res.data;
     } catch(error) {
       console.log('error in loginUser', error);
       handleApiError(error, dispatch);
       openModalDisplay()
+      return null;
     }
   };
 
