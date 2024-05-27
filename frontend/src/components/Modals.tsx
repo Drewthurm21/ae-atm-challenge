@@ -1,35 +1,46 @@
 import { useSelector } from "react-redux";
 import { useModal } from "../context/ModalProvider";
 import { AnimatePresence, motion } from "framer-motion";
-import { RootState } from "../store/store";
+import { RootState, useAppDispatch } from "../store/store";
+import { clearReduxErrorsAction } from "../store/errors/errorReducer";
 
 type ModalProps = {
   messages?: string[];
 };
 
 export const ModalWrapper = ({ messages }: ModalProps) => {
+  const dispatch = useAppDispatch();
   const errors =
     useSelector((state: RootState) => state.errorData.messages) || null;
   const { closeModalDisplay } = useModal();
 
   return (
     <SpringModal
-      closeModal={closeModalDisplay}
       errors={errors}
+      clearErrors={() => dispatch(clearReduxErrorsAction())}
       messages={messages}
+      closeModal={closeModalDisplay}
     />
   );
 };
 
 const SpringModal = ({
   closeModal,
+  clearErrors,
   errors = null,
   messages = [],
 }: {
   closeModal: () => void;
+  clearErrors: () => void;
   errors: String[] | null;
   messages?: String[];
 }) => {
+  const handleCloseModal = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (errors) clearErrors();
+    closeModal();
+  };
+
   return (
     <AnimatePresence>
       <motion.div
@@ -79,7 +90,7 @@ const SpringModal = ({
             )}
             <div className="flex gap-2">
               <button
-                onClick={closeModal}
+                onClick={handleCloseModal}
                 className="bg-white hover:opacity-90 transition-opacity text-indigo-600 font-semibold w-full py-2 rounded"
               >
                 Understood!
