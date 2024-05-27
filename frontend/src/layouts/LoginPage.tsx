@@ -1,31 +1,15 @@
-import { useState } from "react";
+import PageWrapper from "./PageWrapper";
+import LoginForm from "../components/LoginForm";
 import useAuth from "../hooks/useAuth";
 
 export default function LoginPage() {
-  const { loginUser, logoutUser } = useAuth();
-  const [loginFormData, setLoginFormData] = useState({ account_id: "" });
+  const { loginUser } = useAuth();
 
-  const handleFormUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setLoginFormData({ ...loginFormData, [name]: value });
-  };
-
-  const sendLoginRequest = async () => {
-    await loginUser(+loginFormData.account_id);
-  };
+  const sendLoginRequest = async (id: number) => await loginUser(id);
 
   return (
-    <div>
-      <h1>Login Page</h1>
-      <input
-        type="text"
-        name="account_id"
-        placeholder="Account ID"
-        value={loginFormData.account_id}
-        onChange={handleFormUpdate}
-      />
-      <button onClick={sendLoginRequest}>Login</button>
-      <button onClick={logoutUser}>logout</button>
-    </div>
+    <PageWrapper>
+      <LoginForm sendLoginRequest={sendLoginRequest} />
+    </PageWrapper>
   );
 }
