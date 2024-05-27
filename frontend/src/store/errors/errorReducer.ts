@@ -5,7 +5,6 @@ const initialState: ErrorStateShape = {
   messages: [],
 };
 
-
 const errorState = createSlice({
   name: 'errors',
   initialState,
