@@ -6,8 +6,8 @@ const ModalProviderContext = createContext<any>(null);
 const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [modal, setModal] = useState<ReactNode | null>(null);
 
-  const setModalContent = () => {
-    setModal(<ModalWrapper />);
+  const openModalDisplay = (messages: string[]) => {
+    setModal(<ModalWrapper messages={messages} />);
   };
 
   const closeModalDisplay = () => {
@@ -16,7 +16,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ModalProviderContext.Provider
-      value={{ setModalContent, closeModalDisplay }}
+      value={{ openModalDisplay, closeModalDisplay }}
     >
       {children}
       {modal}

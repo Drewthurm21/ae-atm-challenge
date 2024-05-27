@@ -7,17 +7,17 @@ import { useModal } from '../context/ModalProvider';
 
 const useAuth = () => {
   const dispatch = useAppDispatch();
-  const { setModalContent } = useModal();
+  const { openModalDisplay } = useModal();
   const { user, loadingStatus } = useAppSelector((state: RootState) => state.userAuth);
 
   const loginUser = async (id: number) =>  {
     try {
       let res = await axios.post('http://localhost:3000/users/login', { account_id: id });
       dispatch(loginUserAction(res.data));
-      setModalContent()
     } catch(error) {
       console.log('error in loginUser', error);
       handleApiError(error, dispatch);
+      openModalDisplay()
     }
   };
 
