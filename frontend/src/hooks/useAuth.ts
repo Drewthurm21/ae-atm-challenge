@@ -1,11 +1,13 @@
 import axios from 'axios';
 import { useAppDispatch, useAppSelector } from './reduxHooks';
 import { RootState } from '../store/store';
-import { loginUser as loginUserAction, logoutUser as logoutUserAction} from '../store/auth/authReducer';
+import { loginUserAction, logoutUserAction} from '../store/auth/authReducer';
 import { handleApiError } from '../api/apiUtils';
+import { useModal } from '../context/ModalProvider';
 
 const useAuth = () => {
   const dispatch = useAppDispatch();
+  const { openModalDisplay } = useModal();
   const { user, loadingStatus } = useAppSelector((state: RootState) => state.userAuth);
 
   const loginUser = async (id: number) =>  {
@@ -15,6 +17,7 @@ const useAuth = () => {
     } catch(error) {
       console.log('error in loginUser', error);
       handleApiError(error, dispatch);
+      openModalDisplay()
     }
   };
 

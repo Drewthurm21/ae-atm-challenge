@@ -5,19 +5,18 @@ const initialState: ErrorStateShape = {
   messages: [],
 };
 
-
 const errorState = createSlice({
-  name: 'messages',
+  name: 'errors',
   initialState,
   reducers: {
-    setReduxErrors: (state, action: PayloadAction<any>) => {
+    setReduxErrorsAction: (state, action: PayloadAction<any>) => {
       state.messages = [...action.payload];
     },
-    clearReduxErrors: (state) => {
+    clearReduxErrorsAction: (state) => {
       state.messages = null;
     }
   },
 });
 
-export const { setReduxErrors, clearReduxErrors } = errorState.actions;
+export const { setReduxErrorsAction, clearReduxErrorsAction } = errorState.actions;
 export default errorState.reducer;
