@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useAppDispatch, useAppSelector } from './reduxHooks';
 import { RootState } from '../store/store';
-import { loginUser as loginUserAction, logoutUser as logoutUserAction} from '../store/auth/authReducer';
+import { loginUserAction, logoutUserAction} from '../store/auth/authReducer';
 import { handleApiError } from '../api/apiUtils';
 
 const useAuth = () => {

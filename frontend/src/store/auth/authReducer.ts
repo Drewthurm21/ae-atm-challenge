@@ -11,15 +11,17 @@ const userAuth = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    loginUser: (state, action: PayloadAction<SafeCustomerData>) => {
+    loginUserAction: (state, action: PayloadAction<SafeCustomerData>) => {
       state.user = action.payload;
     },
-    logoutUser: (state) => {
+    logoutUserAction: (state) => {
       state.user = null;
       state.loadingStatus = 'idle';
     },
   }
 });
 
-export const { loginUser, logoutUser } = userAuth.actions;
+
+
+export const { loginUserAction, logoutUserAction } = userAuth.actions;
 export default userAuth.reducer;
