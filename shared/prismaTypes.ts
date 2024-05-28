@@ -3387,7 +3387,7 @@ export namespace Prisma {
     id: number | null
     account_id: number | null
     total_deposit: Decimal | null
-    total_witdrawal: Decimal | null
+    total_withdrawal: Decimal | null
     total_transfer: Decimal | null
   }
 
@@ -3395,7 +3395,7 @@ export namespace Prisma {
     id: number | null
     account_id: number | null
     total_deposit: Decimal | null
-    total_witdrawal: Decimal | null
+    total_withdrawal: Decimal | null
     total_transfer: Decimal | null
   }
 
@@ -3404,7 +3404,7 @@ export namespace Prisma {
     account_id: number | null
     date: Date | null
     total_deposit: Decimal | null
-    total_witdrawal: Decimal | null
+    total_withdrawal: Decimal | null
     total_transfer: Decimal | null
     created_at: Date | null
     updated_at: Date | null
@@ -3415,7 +3415,7 @@ export namespace Prisma {
     account_id: number | null
     date: Date | null
     total_deposit: Decimal | null
-    total_witdrawal: Decimal | null
+    total_withdrawal: Decimal | null
     total_transfer: Decimal | null
     created_at: Date | null
     updated_at: Date | null
@@ -3426,7 +3426,7 @@ export namespace Prisma {
     account_id: number
     date: number
     total_deposit: number
-    total_witdrawal: number
+    total_withdrawal: number
     total_transfer: number
     created_at: number
     updated_at: number
@@ -3438,7 +3438,7 @@ export namespace Prisma {
     id?: true
     account_id?: true
     total_deposit?: true
-    total_witdrawal?: true
+    total_withdrawal?: true
     total_transfer?: true
   }
 
@@ -3446,7 +3446,7 @@ export namespace Prisma {
     id?: true
     account_id?: true
     total_deposit?: true
-    total_witdrawal?: true
+    total_withdrawal?: true
     total_transfer?: true
   }
 
@@ -3455,7 +3455,7 @@ export namespace Prisma {
     account_id?: true
     date?: true
     total_deposit?: true
-    total_witdrawal?: true
+    total_withdrawal?: true
     total_transfer?: true
     created_at?: true
     updated_at?: true
@@ -3466,7 +3466,7 @@ export namespace Prisma {
     account_id?: true
     date?: true
     total_deposit?: true
-    total_witdrawal?: true
+    total_withdrawal?: true
     total_transfer?: true
     created_at?: true
     updated_at?: true
@@ -3477,7 +3477,7 @@ export namespace Prisma {
     account_id?: true
     date?: true
     total_deposit?: true
-    total_witdrawal?: true
+    total_withdrawal?: true
     total_transfer?: true
     created_at?: true
     updated_at?: true
@@ -3575,7 +3575,7 @@ export namespace Prisma {
     account_id: number
     date: Date
     total_deposit: Decimal
-    total_witdrawal: Decimal
+    total_withdrawal: Decimal
     total_transfer: Decimal
     created_at: Date
     updated_at: Date
@@ -3605,7 +3605,7 @@ export namespace Prisma {
     account_id?: boolean
     date?: boolean
     total_deposit?: boolean
-    total_witdrawal?: boolean
+    total_withdrawal?: boolean
     total_transfer?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -3617,7 +3617,7 @@ export namespace Prisma {
     account_id?: boolean
     date?: boolean
     total_deposit?: boolean
-    total_witdrawal?: boolean
+    total_withdrawal?: boolean
     total_transfer?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -3639,7 +3639,7 @@ export namespace Prisma {
       account_id: number
       date: Date
       total_deposit: Prisma.Decimal
-      total_witdrawal: Prisma.Decimal
+      total_withdrawal: Prisma.Decimal
       total_transfer: Prisma.Decimal
       created_at: Date
       updated_at: Date
@@ -4068,7 +4068,7 @@ export namespace Prisma {
     readonly account_id: FieldRef<"DailyTotal", 'Int'>
     readonly date: FieldRef<"DailyTotal", 'DateTime'>
     readonly total_deposit: FieldRef<"DailyTotal", 'Decimal'>
-    readonly total_witdrawal: FieldRef<"DailyTotal", 'Decimal'>
+    readonly total_withdrawal: FieldRef<"DailyTotal", 'Decimal'>
     readonly total_transfer: FieldRef<"DailyTotal", 'Decimal'>
     readonly created_at: FieldRef<"DailyTotal", 'DateTime'>
     readonly updated_at: FieldRef<"DailyTotal", 'DateTime'>
@@ -5512,7 +5512,7 @@ export namespace Prisma {
     account_id: 'account_id',
     date: 'date',
     total_deposit: 'total_deposit',
-    total_witdrawal: 'total_witdrawal',
+    total_withdrawal: 'total_withdrawal',
     total_transfer: 'total_transfer',
     created_at: 'created_at',
     updated_at: 'updated_at'
@@ -5819,7 +5819,7 @@ export namespace Prisma {
     account_id?: IntFilter<"DailyTotal"> | number
     date?: DateTimeFilter<"DailyTotal"> | Date | string
     total_deposit?: DecimalFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
-    total_witdrawal?: DecimalFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
+    total_withdrawal?: DecimalFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
     total_transfer?: DecimalFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
     created_at?: DateTimeFilter<"DailyTotal"> | Date | string
     updated_at?: DateTimeFilter<"DailyTotal"> | Date | string
@@ -5831,7 +5831,7 @@ export namespace Prisma {
     account_id?: SortOrder
     date?: SortOrder
     total_deposit?: SortOrder
-    total_witdrawal?: SortOrder
+    total_withdrawal?: SortOrder
     total_transfer?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -5847,7 +5847,7 @@ export namespace Prisma {
     account_id?: IntFilter<"DailyTotal"> | number
     date?: DateTimeFilter<"DailyTotal"> | Date | string
     total_deposit?: DecimalFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
-    total_witdrawal?: DecimalFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
+    total_withdrawal?: DecimalFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
     total_transfer?: DecimalFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
     created_at?: DateTimeFilter<"DailyTotal"> | Date | string
     updated_at?: DateTimeFilter<"DailyTotal"> | Date | string
@@ -5859,7 +5859,7 @@ export namespace Prisma {
     account_id?: SortOrder
     date?: SortOrder
     total_deposit?: SortOrder
-    total_witdrawal?: SortOrder
+    total_withdrawal?: SortOrder
     total_transfer?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -5878,7 +5878,7 @@ export namespace Prisma {
     account_id?: IntWithAggregatesFilter<"DailyTotal"> | number
     date?: DateTimeWithAggregatesFilter<"DailyTotal"> | Date | string
     total_deposit?: DecimalWithAggregatesFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
-    total_witdrawal?: DecimalWithAggregatesFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
+    total_withdrawal?: DecimalWithAggregatesFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
     total_transfer?: DecimalWithAggregatesFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
     created_at?: DateTimeWithAggregatesFilter<"DailyTotal"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"DailyTotal"> | Date | string
@@ -6114,7 +6114,7 @@ export namespace Prisma {
   export type DailyTotalCreateInput = {
     date?: Date | string
     total_deposit?: Decimal | DecimalJsLike | number | string
-    total_witdrawal?: Decimal | DecimalJsLike | number | string
+    total_withdrawal?: Decimal | DecimalJsLike | number | string
     total_transfer?: Decimal | DecimalJsLike | number | string
     created_at?: Date | string
     updated_at?: Date | string
@@ -6126,7 +6126,7 @@ export namespace Prisma {
     account_id: number
     date?: Date | string
     total_deposit?: Decimal | DecimalJsLike | number | string
-    total_witdrawal?: Decimal | DecimalJsLike | number | string
+    total_withdrawal?: Decimal | DecimalJsLike | number | string
     total_transfer?: Decimal | DecimalJsLike | number | string
     created_at?: Date | string
     updated_at?: Date | string
@@ -6135,7 +6135,7 @@ export namespace Prisma {
   export type DailyTotalUpdateInput = {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     total_deposit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    total_witdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_withdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total_transfer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6147,7 +6147,7 @@ export namespace Prisma {
     account_id?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     total_deposit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    total_witdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_withdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total_transfer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6158,7 +6158,7 @@ export namespace Prisma {
     account_id: number
     date?: Date | string
     total_deposit?: Decimal | DecimalJsLike | number | string
-    total_witdrawal?: Decimal | DecimalJsLike | number | string
+    total_withdrawal?: Decimal | DecimalJsLike | number | string
     total_transfer?: Decimal | DecimalJsLike | number | string
     created_at?: Date | string
     updated_at?: Date | string
@@ -6167,7 +6167,7 @@ export namespace Prisma {
   export type DailyTotalUpdateManyMutationInput = {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     total_deposit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    total_witdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_withdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total_transfer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6178,7 +6178,7 @@ export namespace Prisma {
     account_id?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     total_deposit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    total_witdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_withdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total_transfer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6528,7 +6528,7 @@ export namespace Prisma {
     account_id?: SortOrder
     date?: SortOrder
     total_deposit?: SortOrder
-    total_witdrawal?: SortOrder
+    total_withdrawal?: SortOrder
     total_transfer?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -6538,7 +6538,7 @@ export namespace Prisma {
     id?: SortOrder
     account_id?: SortOrder
     total_deposit?: SortOrder
-    total_witdrawal?: SortOrder
+    total_withdrawal?: SortOrder
     total_transfer?: SortOrder
   }
 
@@ -6547,7 +6547,7 @@ export namespace Prisma {
     account_id?: SortOrder
     date?: SortOrder
     total_deposit?: SortOrder
-    total_witdrawal?: SortOrder
+    total_withdrawal?: SortOrder
     total_transfer?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -6558,7 +6558,7 @@ export namespace Prisma {
     account_id?: SortOrder
     date?: SortOrder
     total_deposit?: SortOrder
-    total_witdrawal?: SortOrder
+    total_withdrawal?: SortOrder
     total_transfer?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -6568,7 +6568,7 @@ export namespace Prisma {
     id?: SortOrder
     account_id?: SortOrder
     total_deposit?: SortOrder
-    total_witdrawal?: SortOrder
+    total_withdrawal?: SortOrder
     total_transfer?: SortOrder
   }
 
@@ -7247,7 +7247,7 @@ export namespace Prisma {
   export type DailyTotalCreateWithoutAccountInput = {
     date?: Date | string
     total_deposit?: Decimal | DecimalJsLike | number | string
-    total_witdrawal?: Decimal | DecimalJsLike | number | string
+    total_withdrawal?: Decimal | DecimalJsLike | number | string
     total_transfer?: Decimal | DecimalJsLike | number | string
     created_at?: Date | string
     updated_at?: Date | string
@@ -7257,7 +7257,7 @@ export namespace Prisma {
     id?: number
     date?: Date | string
     total_deposit?: Decimal | DecimalJsLike | number | string
-    total_witdrawal?: Decimal | DecimalJsLike | number | string
+    total_withdrawal?: Decimal | DecimalJsLike | number | string
     total_transfer?: Decimal | DecimalJsLike | number | string
     created_at?: Date | string
     updated_at?: Date | string
@@ -7360,7 +7360,7 @@ export namespace Prisma {
     account_id?: IntFilter<"DailyTotal"> | number
     date?: DateTimeFilter<"DailyTotal"> | Date | string
     total_deposit?: DecimalFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
-    total_witdrawal?: DecimalFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
+    total_withdrawal?: DecimalFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
     total_transfer?: DecimalFilter<"DailyTotal"> | Decimal | DecimalJsLike | number | string
     created_at?: DateTimeFilter<"DailyTotal"> | Date | string
     updated_at?: DateTimeFilter<"DailyTotal"> | Date | string
@@ -7642,7 +7642,7 @@ export namespace Prisma {
     id?: number
     date?: Date | string
     total_deposit?: Decimal | DecimalJsLike | number | string
-    total_witdrawal?: Decimal | DecimalJsLike | number | string
+    total_withdrawal?: Decimal | DecimalJsLike | number | string
     total_transfer?: Decimal | DecimalJsLike | number | string
     created_at?: Date | string
     updated_at?: Date | string
@@ -7663,7 +7663,7 @@ export namespace Prisma {
   export type DailyTotalUpdateWithoutAccountInput = {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     total_deposit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    total_witdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_withdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total_transfer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7673,7 +7673,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     total_deposit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    total_witdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_withdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total_transfer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7683,7 +7683,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     total_deposit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    total_witdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_withdrawal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total_transfer?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
