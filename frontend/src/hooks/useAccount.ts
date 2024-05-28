@@ -1,19 +1,21 @@
 import axios from 'axios';
+import { loadAccountAction, clearAccountAction } from '../store/accounts/accountsReducer';
 import { useAppDispatch, useAppSelector } from './reduxHooks';
-import { loginUserAction, logoutUserAction} from '../store/auth/authReducer';
-import { RootState } from '../store/store';
+import { selectAccountById, selectDailyTotalsByAccountId } from '../store/accounts/accountSelectors';
 import { handleApiError } from '../api/apiUtils';
 import { useModal } from '../context/ModalProvider';
 
 const useAccounts = () => {
   const dispatch = useAppDispatch();
   const { openModalDisplay } = useModal();
-  const { account } = useAppSelector((state: RootState) => state.accountData);
+  const account = useAppSelector(() => selectAccountById(1));
+  const dailyTotal = useAppSelector(() => selectDailyTotalsByAccountId(1));
 
-  const loadAccount = async (id: number) =>  {
+
+  const loadAccounts = async (id: number) =>  {
     try {
-      let res = await axios.post(`http://localhost:3000/accounts/${id}`, { account_id: id });
-      dispatch(loginUserAction(res.data));
+      let res = await axios.post(`http://localhost:3000/accounts/${id}`);
+      dispatch(loadAccountAction(res.data));
       return res.data;
     } catch(error) {
       console.log('error in loginUser', error);
@@ -23,11 +25,9 @@ const useAccounts = () => {
     }
   };
 
+  const clearAccount = () => dispatch(clearAccountAction());
   
-
-  const clearAccount = () => dispatch(logoutUserAction());
-  
-  return { account, dailyTotal, loadAccount, clearAccount };
+  return { account, dailyTotal, loadAccounts, clearAccount };
 };
 
 export default useAccounts;

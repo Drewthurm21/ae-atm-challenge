@@ -22,7 +22,7 @@ describe('DailyTotal Model', () => {
       data: {
         account_id: ACCOUNT_ID,
         total_deposit: new Decimal(200.00),
-        total_witdrawal: new Decimal(50.00),
+        total_withdrawal: new Decimal(50.00),
         total_transfer: new Decimal(0.00),
       },
     });
@@ -30,7 +30,7 @@ describe('DailyTotal Model', () => {
     expect(dailyTotal).toHaveProperty('id');
     expect(dailyTotal.account_id).toBe(ACCOUNT_ID);
     expect(dailyTotal.total_deposit.toString()).toBe('200');
-    expect(dailyTotal.total_witdrawal.toString()).toBe('50');
+    expect(dailyTotal.total_withdrawal.toString()).toBe('50');
   });
 
   test('prevent duplicate daily total records for the same account and date', async () => {
@@ -40,7 +40,7 @@ describe('DailyTotal Model', () => {
           account_id: ACCOUNT_ID,
           date: new Date(),
           total_deposit: new Decimal(100.00),
-          total_witdrawal: new Decimal(25.00),
+          total_withdrawal: new Decimal(25.00),
           total_transfer: new Decimal(10.00),
         },
       }),

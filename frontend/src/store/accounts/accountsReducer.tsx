@@ -14,8 +14,11 @@ const accountData = createSlice({
   name: "user",
   initialState,
   reducers: {
-    loadAccountAction: (state, action: PayloadAction<Account[]>) => {
-      state.accounts = action.payload;
+    loadAccountAction: (state, action: PayloadAction<Account>) => {
+      state.accounts = {
+        ...state.accounts,
+        [action.payload.id]: action.payload,
+      };
     },
     clearAccountAction: (state) => {
       state.accounts = null;

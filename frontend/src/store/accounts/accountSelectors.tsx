@@ -7,9 +7,7 @@ interface RootState {
 }
 
 interface AccountsState {
-  accounts: {
-    [id: number]: AccountWithDailyTotals;
-  };
+  accounts: Record<number, AccountWithDailyTotals> | null;
 }
 
 const selectAccountsState = (state: RootState) => state.accounts;
@@ -20,7 +18,9 @@ export const selectAllAccounts = createSelector(
 );
 
 export const selectAccountById = (accountId: number) =>
-  createSelector([selectAllAccounts], (accounts) => accounts[accountId]);
+  createSelector([selectAllAccounts], (accounts) =>
+    accounts ? accounts[accountId] : undefined
+  );
 
 export const selectDailyTotalsByAccountId = (accountId: number) =>
   createSelector([selectAccountById(accountId)], (account) =>
