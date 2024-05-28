@@ -28,7 +28,7 @@ export const validateWithdrawalTransaction = (transaction: Transaction, account:
   const transactionStatus: ValidatedTransactionState = { hasErrors: false, errors: [] };
   const { daily_totals } = account;
 
-  const allowedWithdrawalAmount = DAILY_WITHDRAWAL_LIMIT.minus(daily_totals[0].total_witdrawal.abs());
+  const allowedWithdrawalAmount = DAILY_WITHDRAWAL_LIMIT.minus(daily_totals[0].total_withdrawal.abs());
 
   if (transaction.debit.greaterThan(SINGLE_WITHDRAWAL_LIMIT)) {
     transactionStatus.errors.push('Withdrawal exceeds single transaction limit.', `Withdrawals must be $${SINGLE_WITHDRAWAL_LIMIT} or less.`);

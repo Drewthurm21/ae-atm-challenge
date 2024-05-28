@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { Transaction } from '@prisma/client';
-import { AccountWithOptionalDetails } from '../types';
+import { AccountWithDailyTotals } from '../types';
 import { CustomError } from '../middleware/errorHandler';
-import { getAccountWithTransactionsById, getTransactionsByAccountId } from '../services/queries';
+import { getAccountWithTodayDailyTotalsById, getTransactionsByAccountId } from '../services/queries';
 
 
 export const getAccountById = async (req: Request, res: Response, next: NextFunction) => {
@@ -10,7 +10,7 @@ export const getAccountById = async (req: Request, res: Response, next: NextFunc
   const { account_id }= req.params;
 
   try {
-    const account: AccountWithOptionalDetails | null = await getAccountWithTransactionsById(Number(account_id));
+    const account: AccountWithDailyTotals | null = await getAccountWithTodayDailyTotalsById(Number(account_id));
 
     if (!account) {
       const error: CustomError = new Error('Account not found.');
@@ -23,7 +23,10 @@ export const getAccountById = async (req: Request, res: Response, next: NextFunc
       balance: account.balance,
       type: account.type,
       credit_limit: account.credit_limit,
-      transaction_ids: account.transactions!.map(transaction => transaction.id)
+      daily_totals: {
+        total_deposit: account.daily_totals[0].total_deposit,
+        total_withdrawal: account.daily_totals[0].total_withdrawal,
+      }
     };
 
     res.status(200).json(accountData);

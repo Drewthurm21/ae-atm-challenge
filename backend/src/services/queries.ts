@@ -41,7 +41,7 @@ export const getAccountWithTodayDailyTotalsById = async (id: number): Promise<Ac
                 account_id: id,
                 date: today,
                 total_deposit: 0,
-                total_witdrawal: 0,
+                total_withdrawal: 0,
                 total_transfer: 0,
             },
             update: {
@@ -91,7 +91,7 @@ export const updateDailyTotals = async (transaction: Transaction): Promise<Daily
             total_deposit: {
                 increment: credit,
             },
-            total_witdrawal: {
+            total_withdrawal: {
                 decrement: debit,
             }
         },

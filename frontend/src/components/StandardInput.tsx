@@ -43,7 +43,10 @@ export default function StandardInput({
     <div className="mb-12">
       {label && (
         <div className="mb-1.5 flex items-end justify-between">
-          <label htmlFor={name} className="block text-lg text-white bold">
+          <label
+            htmlFor={name}
+            className="block text-black text-xl font-semibold mb-2"
+          >
             {label}
           </label>
         </div>

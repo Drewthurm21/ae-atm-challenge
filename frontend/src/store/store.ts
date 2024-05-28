@@ -3,11 +3,13 @@ import { useDispatch } from 'react-redux';
 
 import authData from './auth/authReducer';
 import errorData from './errors/errorReducer';
+import accountData from './accounts/accountsReducer'
 
 const store = configureStore({
   reducer: {
     userAuth: authData,
     errorData,
+    accountData
   },
   devTools: process.env.NODE_ENV !== 'production',
 });
