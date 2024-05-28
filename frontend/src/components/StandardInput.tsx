@@ -56,6 +56,7 @@ export default function StandardInput({
         type="text"
         name="account_id"
         onChange={handleInput}
+        maxLength={8}
         value={inputValue}
         onFocus={clearPlaceHolder}
         onBlur={resetPlaceHolder}
