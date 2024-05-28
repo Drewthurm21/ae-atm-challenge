@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { standardFormClasses } from "./styles";
-import { sanitizeAccountIdInput } from "../utils";
+import { returnDigitsOnly } from "../utils";
 import StandardButton from "./StandardButton";
 import StandardInput from "./StandardInput";
 
@@ -12,7 +12,7 @@ export default function LoginForm({
   const [loginFormData, setLoginFormData] = useState({ account_id: "" });
 
   const handleUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let account_id = sanitizeAccountIdInput(e.target.value);
+    let account_id = returnDigitsOnly(e.target.value);
     setLoginFormData({ account_id });
   };
 
@@ -26,8 +26,9 @@ export default function LoginForm({
         name="account_id-input"
         label="Enter account ID to login."
         value={loginFormData.account_id}
+        maxLength={8}
         placeholder={"•••••••••"}
-        mask={sanitizeAccountIdInput}
+        mask={returnDigitsOnly}
         onChange={handleUpdate}
       />
       <StandardButton type="submit" onClick={handleLogin}>

@@ -8,6 +8,7 @@ type StandardInputProps = {
   value?: string;
   placeholder?: string;
   className?: string;
+  maxLength?: number;
   mask?: (s: string) => string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
@@ -18,9 +19,9 @@ export default function StandardInput({
   placeholder = "",
   className = "",
   label,
+  maxLength,
   mask,
   onChange,
-  ...rest
 }: StandardInputProps) {
   const [inputValue, setInputValue] = useState(value);
   const [inputPlaceholder, setInputPlaceholder] = useState(placeholder);
@@ -52,13 +53,12 @@ export default function StandardInput({
         type="text"
         name={name}
         onChange={handleInput}
-        maxLength={8}
         value={inputValue}
         onFocus={clearPlaceHolder}
         onBlur={resetPlaceHolder}
+        maxLength={maxLength ? maxLength : 9}
         placeholder={inputPlaceholder}
         className={twMerge(standardInputClasses, className)}
-        {...rest}
       />
     </div>
   );
