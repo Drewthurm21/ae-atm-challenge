@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAccounts from "../hooks/useAccount";
 import useAuth from "../hooks/useAuth";
+import StandardButton from "../components/StandardButton";
 
 export default function Dashboard() {
   const navigateTo = useNavigate();
@@ -19,20 +20,28 @@ export default function Dashboard() {
   }, [currentUser, navigateTo]);
 
   return (
-    <PageWrapper>
-      <div className={standardFormClasses}>
-        <div className="flex mb-12">
-          <p className="text-xl self-start font-semibold mb-2">
-            Welcome {currentUser?.name}! Select an option...
-          </p>
+    currentUser && (
+      <PageWrapper>
+        <div className={standardFormClasses}>
+          <div className="flex mb-12">
+            <p className="text-xl self-start font-semibold mb-2">
+              Welcome {currentUser.name}! Select an option...
+            </p>
+          </div>
+          <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
+            {dashboardCardData.map((card) => (
+              <DashboardCard key={card.title} {...card} />
+            ))}
+            <StandardButton
+              className="mt-12 col-start-2"
+              onClick={() => navigateTo("/login")}
+            >
+              Log out
+            </StandardButton>
+          </div>
         </div>
-        <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
-          {dashboardCardData.map((card) => (
-            <DashboardCard key={card.title} {...card} />
-          ))}
-        </div>
-      </div>
-    </PageWrapper>
+      </PageWrapper>
+    )
   );
 }
 
@@ -62,7 +71,7 @@ const DashboardCard = ({ title, subtitle, href }: CardProps) => {
 const dashboardCardData = [
   {
     title: "Withdrawal",
-    subtitle: "Withdrawal cash",
+    subtitle: "Withdraw cash",
     href: "/withdrawal",
   },
   {

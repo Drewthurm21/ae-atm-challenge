@@ -30,7 +30,7 @@ export default function LoginForm({
         mask={sanitizeAccountIdInput}
         onChange={handleUpdate}
       />
-      <StandardButton type="submit" onClick={handleLogin} className="w-64 h-12">
+      <StandardButton type="submit" onClick={handleLogin}>
         Sign in
       </StandardButton>
     </form>
