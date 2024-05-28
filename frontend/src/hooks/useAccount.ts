@@ -7,14 +7,11 @@ import { useModal } from '../context/ModalProvider';
 
 const useAccounts = () => {
   const dispatch = useAppDispatch();
-  const { openModalDisplay } = useModal();
-  const account = useAppSelector(() => selectAccountById(1));
-  const dailyTotal = useAppSelector(() => selectDailyTotalsByAccountId(1));
-
+  const { openModalDisplay } = useModal();  
 
   const loadAccounts = async (id: number) =>  {
     try {
-      let res = await axios.post(`http://localhost:3000/accounts/${id}`);
+      let res = await axios.get(`http://localhost:3000/accounts/${id}`);
       dispatch(loadAccountAction(res.data));
       return res.data;
     } catch(error) {
@@ -24,10 +21,12 @@ const useAccounts = () => {
       return null;
     }
   };
-
+  
+  const getAccount = (id: number) => useAppSelector(() => selectAccountById(id));
+  const getDailyTotals = (id: number) =>  useAppSelector(() => selectDailyTotalsByAccountId(id));
   const clearAccount = () => dispatch(clearAccountAction());
   
-  return { account, dailyTotal, loadAccounts, clearAccount };
+  return { getAccount, getDailyTotals, loadAccounts, clearAccount };
 };
 
 export default useAccounts;

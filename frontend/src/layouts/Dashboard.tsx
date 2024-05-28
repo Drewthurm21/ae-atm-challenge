@@ -2,11 +2,14 @@ import PageWrapper from "./PageWrapper";
 import { useAppSelector } from "../hooks/reduxHooks";
 import { standardFormClasses } from "../components/styles";
 import { selectCurrentUser } from "../store/auth/authSelectors";
+import useAccounts from "../hooks/useAccount";
 
 export default function Dashboard() {
-  const user = useAppSelector(selectCurrentUser);
+  const { loadAccounts } = useAccounts();
 
-  console.log(user);
+  const user = useAppSelector(selectCurrentUser);
+  loadAccounts(user!.id);
+
   return (
     <PageWrapper>
       <div className={standardFormClasses}>
