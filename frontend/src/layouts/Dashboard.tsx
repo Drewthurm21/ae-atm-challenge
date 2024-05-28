@@ -1,21 +1,24 @@
 import PageWrapper from "./PageWrapper";
-import { useAppSelector } from "../hooks/reduxHooks";
 import { standardFormClasses } from "../components/styles";
-import { selectCurrentUser } from "../store/auth/authSelectors";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import useAccounts from "../hooks/useAccount";
+import useAuth from "../hooks/useAuth";
 
 export default function Dashboard() {
-  const { loadAccounts } = useAccounts();
+  const { loadAccount } = useAccounts();
+  const { currentUser } = useAuth();
 
-  const user = useAppSelector(selectCurrentUser);
-  loadAccounts(user!.id);
+  useEffect(() => {
+    if (currentUser) loadAccount(currentUser!.id);
+  }, [currentUser]);
 
   return (
     <PageWrapper>
       <div className={standardFormClasses}>
-        <div className="grid gap-44 grid-cols-1 lg:grid-cols-3">
+        <div className="flex mb-12">
           <p className="text-xl self-start font-semibold mb-2">
-            Select an option
+            Welcome {currentUser!.name || "back"}! Select an option...
           </p>
         </div>
         <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
@@ -36,8 +39,8 @@ interface CardProps {
 
 const DashboardCard = ({ title, subtitle, href }: CardProps) => {
   return (
-    <a
-      href={href}
+    <Link
+      to={href}
       className="relative w-64 h-40 p-4 rounded border-[1px] border-slate-300 overflow-hidden group bg-white"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-primary-100 to-primary-200 translate-y-[100%] group-hover:translate-y-[0%] transition-transform duration-300" />
@@ -47,7 +50,7 @@ const DashboardCard = ({ title, subtitle, href }: CardProps) => {
       <p className="relative z-10 text-slate-400 group-hover:text-violet-200 duration-300">
         {subtitle}
       </p>
-    </a>
+    </Link>
   );
 };
 

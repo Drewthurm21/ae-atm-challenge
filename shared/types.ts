@@ -16,8 +16,13 @@ export interface AccountWithOptionalDetails extends Account {
   transactions?: Transaction[];
 };
 
+export interface DailyTotalData {
+  total_deposit: number;
+  total_withdrawal: number;
+}
+
 export interface AccountWithDailyTotals extends Account {
-  daily_totals: DailyTotal[];
+  daily_totals: DailyTotal[] | DailyTotalData;
 };
 
 export interface ValidatedTransactionState {

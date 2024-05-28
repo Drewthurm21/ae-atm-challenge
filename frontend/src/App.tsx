@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { LoginPage } from "./layouts";
-import { Dashboard } from "./layouts";
+import { LoginPage, Dashboard, BalancePage } from "./layouts";
 
 function App() {
   return (
@@ -8,6 +7,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<Dashboard />} />
+        <Route path="/balance" element={<BalancePage />} />
       </Routes>
     </Router>
   );
