@@ -22,6 +22,7 @@ export interface DailyTotalData {
 }
 
 export interface AccountWithDailyTotals extends Account {
+  balance?: string;
   daily_totals: DailyTotal[] | DailyTotalData;
 };
 

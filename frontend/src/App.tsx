@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { LoginPage, Dashboard, BalancePage } from "./layouts";
 
 function App() {
@@ -8,6 +13,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<Dashboard />} />
         <Route path="/balance" element={<BalancePage />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
   );

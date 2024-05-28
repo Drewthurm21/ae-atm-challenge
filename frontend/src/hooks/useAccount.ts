@@ -22,9 +22,9 @@ const useAccounts = () => {
   };
 
   
-  const clearAccount = () => dispatch(clearAccountAction());
+  const clearAccounts = () => dispatch(clearAccountAction());
   
-  return { loadAccount, clearAccount };
+  return { loadAccount, clearAccounts };
 };
 
 export default useAccounts;

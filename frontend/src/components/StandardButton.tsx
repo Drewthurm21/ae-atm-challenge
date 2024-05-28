@@ -5,11 +5,13 @@ import { standardButtonClasses } from "./styles";
 type ButtonProps = {
   children: ReactNode;
   className?: string;
+  logout?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export default function StandardButton({
   children,
   className,
+  logout = false,
   ...rest
 }: ButtonProps) {
   return (

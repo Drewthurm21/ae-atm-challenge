@@ -4,7 +4,6 @@ import { SafeCustomerData } from '@shared/types';
 
 const initialState: UserStateShape = {
   user: null,
-  loadingStatus: 'idle',
 };
 
 const userAuth = createSlice({

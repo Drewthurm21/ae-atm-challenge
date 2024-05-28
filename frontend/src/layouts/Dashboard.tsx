@@ -1,16 +1,19 @@
 import PageWrapper from "./PageWrapper";
 import { standardFormClasses } from "../components/styles";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import useAccounts from "../hooks/useAccount";
 import useAuth from "../hooks/useAuth";
 
 export default function Dashboard() {
   const { loadAccount } = useAccounts();
   const { currentUser } = useAuth();
+  if (!currentUser) {
+    <Navigate to={"/login"} />;
+  }
 
   useEffect(() => {
-    if (currentUser) loadAccount(currentUser!.id);
+    if (currentUser) loadAccount(currentUser.id);
   }, [currentUser]);
 
   return (
@@ -18,7 +21,7 @@ export default function Dashboard() {
       <div className={standardFormClasses}>
         <div className="flex mb-12">
           <p className="text-xl self-start font-semibold mb-2">
-            Welcome {currentUser!.name || "back"}! Select an option...
+            Welcome {currentUser?.name}! Select an option...
           </p>
         </div>
         <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
