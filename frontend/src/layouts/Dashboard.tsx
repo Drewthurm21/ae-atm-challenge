@@ -1,20 +1,22 @@
 import PageWrapper from "./PageWrapper";
 import { standardFormClasses } from "../components/styles";
 import { useEffect } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAccounts from "../hooks/useAccount";
 import useAuth from "../hooks/useAuth";
 
 export default function Dashboard() {
+  const navigateTo = useNavigate();
   const { loadAccount } = useAccounts();
   const { currentUser } = useAuth();
-  if (!currentUser) {
-    <Navigate to={"/login"} />;
-  }
 
   useEffect(() => {
-    if (currentUser) loadAccount(currentUser.id);
-  }, [currentUser]);
+    if (!currentUser) {
+      navigateTo("/login");
+    } else {
+      loadAccount(currentUser.id);
+    }
+  }, [currentUser, navigateTo]);
 
   return (
     <PageWrapper>
