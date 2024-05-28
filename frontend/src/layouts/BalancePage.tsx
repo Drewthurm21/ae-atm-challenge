@@ -15,16 +15,7 @@ export default function BalancePage() {
     (state: RootState) => state.accountData.accounts
   );
 
-  useEffect(() => {
-    if (!currentUser) {
-      navigateTo("/login");
-    }
-  }, [currentUser, navigateTo]);
-
-  if (!currentUser || !accounts) {
-    return null;
-  }
-
+  if (!currentUser || !accounts) return null;
   const currentAccount = accounts[currentUser.id];
 
   return (

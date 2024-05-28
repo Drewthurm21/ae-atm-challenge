@@ -20,24 +20,20 @@ export default function StandardInput({
   label,
   mask,
   onChange,
+  ...rest
 }: StandardInputProps) {
   const [inputValue, setInputValue] = useState(value);
   const [inputPlaceholder, setInputPlaceholder] = useState(placeholder);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let { value } = e.target;
-    if (mask) value = mask(e.target.value);
-    setInputValue(value);
+    const { value } = e.target;
+    const maskedValue = mask ? mask(value) : value;
+    setInputValue(maskedValue);
     onChange(e);
   };
 
-  const clearPlaceHolder = () => {
-    setInputPlaceholder("");
-  };
-
-  const resetPlaceHolder = () => {
-    setInputPlaceholder(placeholder || "");
-  };
+  const clearPlaceHolder = () => setInputPlaceholder("");
+  const resetPlaceHolder = () => setInputPlaceholder(placeholder || "");
 
   return (
     <div className="mb-12">
@@ -52,9 +48,9 @@ export default function StandardInput({
         </div>
       )}
       <input
-        id={name}
+        id={name + "-input"}
         type="text"
-        name="account_id"
+        name={name}
         onChange={handleInput}
         maxLength={8}
         value={inputValue}
@@ -62,6 +58,7 @@ export default function StandardInput({
         onBlur={resetPlaceHolder}
         placeholder={inputPlaceholder}
         className={twMerge(standardInputClasses, className)}
+        {...rest}
       />
     </div>
   );

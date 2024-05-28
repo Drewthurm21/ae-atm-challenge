@@ -12,11 +12,7 @@ export default function Dashboard() {
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    if (!currentUser) {
-      navigateTo("/login");
-    } else {
-      loadAccount(currentUser.id);
-    }
+    if (currentUser) loadAccount(currentUser.id);
   }, [currentUser, navigateTo]);
 
   return (
@@ -25,7 +21,8 @@ export default function Dashboard() {
         <div className={standardFormClasses}>
           <div className="flex mb-12">
             <p className="text-xl self-start font-semibold mb-2">
-              Welcome {currentUser.name}! Select an option...
+              Welcome back{`, ${currentUser.name.split(" ")[0]}`}! Please select
+              an option...
             </p>
           </div>
           <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
@@ -71,7 +68,7 @@ const DashboardCard = ({ title, subtitle, href }: CardProps) => {
 const dashboardCardData = [
   {
     title: "Withdrawal",
-    subtitle: "Withdraw cash",
+    subtitle: "Withdrawal cash",
     href: "/withdrawal",
   },
   {
