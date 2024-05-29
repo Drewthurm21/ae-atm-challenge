@@ -1,24 +1,26 @@
 import { standardFormClasses } from "../components/styles";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { usdInputMask } from "../utils";
-
-import useAuth from "../hooks/useAuth";
 import PageWrapper from "./PageWrapper";
+import { usdInputMask } from "../utils";
+import { useModal } from "../context/ModalProvider";
+import useAuth from "../hooks/useAuth";
 import useAccounts from "../hooks/useAccount";
 import StandardInput from "../components/StandardInput";
 import StandardButton from "../components/StandardButton";
 
 export default function TransactionPage() {
   const navigateTo = useNavigate();
+  const { openConfirmModal } = useModal();
   const { currentUser } = useAuth();
 
   useEffect(() => {
     if (!currentUser) navigateTo("/login");
   }, [currentUser, navigateTo]);
+
   if (!currentUser) return null;
 
-  const { submitTransaction } = useAccounts();
+  const { validateTransaction, submitTransaction } = useAccounts();
   const { pathname } = useLocation();
   const transactionType = pathname === "/deposit" ? "credit" : "debit";
 
@@ -37,8 +39,14 @@ export default function TransactionPage() {
   };
 
   const handleTransactionSubmission = async () => {
+    const validatedTransaction = validateTransaction({
+      transactionData,
+      pathname,
+    });
+    if (validatedTransaction.hasErrors) return;
+
     const transaction = { transactionData, pathname, currentUser };
-    submitTransaction(transaction);
+    openConfirmModal(() => submitTransaction(transaction));
   };
 
   return (
@@ -52,7 +60,7 @@ export default function TransactionPage() {
           maxLength={8}
           onChange={handleTransactionUpdate}
         />
-        <div className="w-4/5 flex justify-evenly ">
+        <div className="w-4/5 my-6 flex justify-evenly ">
           <StandardButton onClick={() => navigateTo("/home")}>
             Back
           </StandardButton>

@@ -2,8 +2,8 @@ import axios from 'axios';
 import { useAppDispatch, useAppSelector } from './reduxHooks';
 import { selectCurrentAccount } from '../store/accounts/accountSelectors';
 import { loadAccountAction, clearAccountAction } from '../store/accounts/accountsReducer';
-import { setModalMessagingAction as setErrors } from '../store/messaging/modalMessageReducer';
-
+import { setModalErrorsAction as setErrors, setModalMessagingAction as setMessages } from '../store/messaging/modalMessageReducer';
+import { ValidatedTransactionState } from '@shared/types';
 import { handleApiError } from '../api/apiUtils';
 import { useModal } from '../context/ModalProvider';
 import { TransactionRequestData } from '@shared/types';
@@ -15,9 +15,7 @@ const SINGLE_DEPOSIT_LIMIT = 1000;
 
 interface ValidationProps {
   transactionData: TransactionRequestData;
-  currentAccount: any;
-  transactionState?: any;
-  pathname?: string;
+  pathname: string;
 };
 
 const useAccounts = () => {
@@ -33,7 +31,7 @@ const useAccounts = () => {
     } catch(error) {
       console.log('error in useAccounts');
       handleApiError(error, dispatch);
-      openModalDisplay()
+      openModalDisplay();
       return null;
     }
   };
@@ -42,21 +40,11 @@ const useAccounts = () => {
      transactionData, pathname 
     }: { transactionData: TransactionRequestData, pathname: string}) => {
 
-    const transactionState = validateTransaction({
-      transactionData,
-      pathname, 
-      currentAccount
-    });
-
-    if (transactionState.hasErrors) {
-      dispatch(setErrors(transactionState.errors));
-      openModalDisplay();
-    };
-
     try {
       let res = await axios.post(`${BASE_URL}/transactions${pathname}`, transactionData);
       dispatch(loadAccountAction(res.data));
-      console.log('res.data in useAccounts', res.data)
+      dispatch(setMessages(['Transaction successful!']))
+      openModalDisplay();
       return res.data;
     } catch(error) {
       console.log('error in useAccounts');
@@ -65,29 +53,45 @@ const useAccounts = () => {
       return null;
     };
   };
+
+  const validateTransaction = ({transactionData, pathname}: ValidationProps) => {
+    const transactionState: ValidatedTransactionState = { errors: [], hasErrors: false };
+    const transaction = { transactionData, transactionState, currentAccount };
+    const { errors } = transactionState;
+  
+    if (transactionData.amount <= 0) {
+      errors.push('Transactions amount must be greater than $0.');
+    }
+  
+    if (pathname === "/deposit") {
+      executeDepositValidation(transaction);
+    } else {
+      executeWithdrawalValidation(transaction);
+    };
+    
+    if (errors.length > 0) {
+      transactionState.hasErrors = true;
+      dispatch(setErrors(errors));
+      openModalDisplay();
+    }
+
+    return transactionState;
+  };
+
   
   const clearAccounts = () => dispatch(clearAccountAction());
   
-  return { currentAccount, loadAccount, clearAccounts, submitTransaction };
+  return { currentAccount, loadAccount, clearAccounts, submitTransaction, validateTransaction };
 };
 
-export const validateTransaction = ({transactionData, pathname, currentAccount}: ValidationProps) => {
-  const transactionState = { errors: [], hasErrors: false };
-
-  if (pathname === "/deposit") {
-    executeDepositValidation({transactionData, transactionState, currentAccount});
-  } else {
-    executeWithdrawalValidation({transactionData, transactionState, currentAccount});
-  };
-  
-  if (transactionState.errors.length > 0) {
-    transactionState.hasErrors = true;
-  }
-
-  return transactionState;
+interface WithdrawDepositProps {
+  transactionData: TransactionRequestData;
+  transactionState: ValidatedTransactionState;
+  currentAccount: any;
 };
 
-const executeWithdrawalValidation = ({transactionData, transactionState, currentAccount}: ValidationProps) => {
+
+const executeWithdrawalValidation = ({transactionData, transactionState, currentAccount}: WithdrawDepositProps) => {
   const { balance, credit_limit, daily_totals: { total_withdrawals } } = currentAccount;
   const { errors } = transactionState
   const debitAmount = transactionData.debit;
@@ -120,17 +124,10 @@ const executeWithdrawalValidation = ({transactionData, transactionState, current
 
       );
     };
+
   } else {
 
     if (debitAmount > balance) {
-      errors.push(
-        'Withdrawal exceeds account balance.', 
-      `Account balance is $${balance}.`
-
-      );
-    };
-  
-    if (debitAmount - balance < 0) {
       errors.push(
         'Withdrawal exceeds account balance.', 
       `Account balance is $${balance}.`
@@ -142,14 +139,10 @@ const executeWithdrawalValidation = ({transactionData, transactionState, current
   return;
 };
 
-const executeDepositValidation = ({transactionData, transactionState, currentAccount}: ValidationProps) => {
+const executeDepositValidation = ({transactionData, transactionState, currentAccount}: WithdrawDepositProps) => {
   const { errors } = transactionState;
   const { credit } = transactionData;
 
-  if (credit <= 0) {
-    errors.push('Deposit amount must be greater than $0.');
-  }
-  
   if (credit > SINGLE_DEPOSIT_LIMIT) {
     errors.push(
       'Deposit exceeds single transaction limit.', 

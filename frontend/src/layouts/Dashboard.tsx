@@ -13,6 +13,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (currentUser) loadAccount(currentUser.id);
+    else navigateTo("/login");
   }, [currentUser, navigateTo]);
 
   return (

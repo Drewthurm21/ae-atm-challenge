@@ -1,22 +1,28 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import ModalWrapper from "../components/Modals";
+import { MessageModalWrapper, ConfirmationModal } from "../components/Modals";
 
 const ModalProviderContext = createContext<any>(null);
 
 const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [modal, setModal] = useState<ReactNode | null>(null);
 
-  const openModalDisplay = (messages: string[]) => {
-    setModal(<ModalWrapper messages={messages} />);
+  const openModalDisplay = () => {
+    setModal(<MessageModalWrapper />);
   };
 
   const closeModalDisplay = () => {
     setModal(null);
   };
 
+  const openConfirmModal = (confirmCb: any) => {
+    setModal(
+      <ConfirmationModal closeModal={closeModalDisplay} confirmCb={confirmCb} />
+    );
+  };
+
   return (
     <ModalProviderContext.Provider
-      value={{ openModalDisplay, closeModalDisplay }}
+      value={{ openConfirmModal, openModalDisplay, closeModalDisplay }}
     >
       {children}
       {modal}

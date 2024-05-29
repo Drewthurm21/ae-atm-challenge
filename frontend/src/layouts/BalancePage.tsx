@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import PageWrapper from "./PageWrapper";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks/reduxHooks";
@@ -12,7 +13,9 @@ export default function BalancePage() {
   const { currentUser } = useAuth();
   const currentAccount = useAppSelector(selectCurrentAccount);
 
-  if (!currentUser || !currentAccount) return null;
+  useEffect(() => {
+    if (!currentUser || !currentAccount) navigateTo("/login");
+  }, [currentUser, navigateTo, currentAccount]);
 
   return (
     currentAccount && (

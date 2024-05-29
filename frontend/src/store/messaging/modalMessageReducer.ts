@@ -29,5 +29,11 @@ const modalMessages = createSlice({
   },
 });
 
-export const { setModalMessagingAction, clearModalMessagingAction } = modalMessages.actions;
+export const { 
+  setModalMessagingAction, 
+  clearModalMessagingAction, 
+  setModalErrorsAction, 
+  clearModalErrorsAction 
+} = modalMessages.actions;
+
 export default modalMessages.reducer;

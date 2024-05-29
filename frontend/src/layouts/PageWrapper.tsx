@@ -1,16 +1,6 @@
-import { ReactNode, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import { ReactNode } from "react";
 
 export default function PageWrapper({ children }: { children: ReactNode }) {
-  const navigateTo = useNavigate();
-  const { pathname } = useLocation();
-  const { currentUser } = useAuth();
-
-  useEffect(() => {
-    if (!currentUser && pathname !== "/login") navigateTo("/login");
-  }, [currentUser, navigateTo]);
-
   return (
     <div className="flex flex-col h-screen transition-all">
       <nav className="bg-zinc-900 text-zinc-50 p-4">
