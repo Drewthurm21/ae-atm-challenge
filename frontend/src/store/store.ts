@@ -2,13 +2,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 
 import authData from './auth/authReducer';
-import errorData from './errors/errorReducer';
+import modalMessages from './messaging/modalMessageReducer';
 import accountData from './accounts/accountsReducer'
 
 const store = configureStore({
   reducer: {
     userAuth: authData,
-    errorData,
+    modalData: modalMessages,
     accountData
   },
   devTools: process.env.NODE_ENV !== 'production',

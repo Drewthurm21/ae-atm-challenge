@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { loadAccountAction, clearAccountAction } from '../store/accounts/accountsReducer';
-import { setReduxErrorsAction as setErrors } from '../store/errors/errorReducer';
+import { setModalMessagingAction as setErrors } from '../store/messaging/modalMessageReducer';
 import { selectCurrentAccount } from '../store/accounts/accountSelectors';
 import { useAppDispatch, useAppSelector } from './reduxHooks';
 import { handleApiError } from '../api/apiUtils';
 import { useModal } from '../context/ModalProvider';
-import { TransactionRequestData, ValidatedTransactionState } from '@shared/types';
+import { TransactionRequestData } from '@shared/types';
 
 const BASE_URL = 'http://localhost:3000'
 const DAILY_WITHDRAW_LIMIT = 400;

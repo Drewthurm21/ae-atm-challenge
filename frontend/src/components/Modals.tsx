@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { useModal } from "../context/ModalProvider";
 import { AnimatePresence, motion } from "framer-motion";
 import { RootState, useAppDispatch } from "../store/store";
-import { clearReduxErrorsAction } from "../store/errors/errorReducer";
+import { clearModalMessagingAction as clearErrors } from "../store/messaging/modalMessageReducer";
 
 type ModalProps = {
   messages?: string[];
@@ -17,7 +17,7 @@ export const ModalWrapper = ({ messages }: ModalProps) => {
   return (
     <SpringModal
       errors={errors}
-      clearErrors={() => dispatch(clearReduxErrorsAction())}
+      clearErrors={() => dispatch(clearErrors())}
       messages={messages}
       closeModal={closeModalDisplay}
     />
