@@ -40,8 +40,8 @@ export const getAccountWithTodayDailyTotalsById = async (id: number): Promise<Ac
             create: {
                 account_id: id,
                 date: today,
-                total_deposit: 0,
-                total_withdrawal: 0,
+                total_deposits: 0,
+                total_withdrawals: 0,
                 total_transfer: 0,
             },
             update: {
@@ -88,10 +88,10 @@ export const updateDailyTotals = async (transaction: Transaction): Promise<Daily
     return await prisma.dailyTotal.update({
         where: { account_id_date: { account_id: account_id, date: new Date() } },
         data: {
-            total_deposit: {
+            total_deposits: {
                 increment: credit,
             },
-            total_withdrawal: {
+            total_withdrawals: {
                 decrement: debit,
             }
         },

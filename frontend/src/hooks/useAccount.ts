@@ -83,14 +83,41 @@ export const validateTransaction = ({transactionData, pathname, currentAccount}:
   return transactionState;
 };
 
-// const executeWithdrawalValidation = ({transactionData, transactionState, currentAccount}: TransactionValidationProps) => {
-//   const { daily_totals } = currentAccount;
+const executeWithdrawalValidation = ({transactionData, transactionState, currentAccount}: TransactionValidationProps) => {
+  const { daily_totals: { total_withdrawal } } = currentAccount;
 
-//   if 
-//   return;
-// };
+
+  if (transactionData.debit <= 0) {
+    transactionState.errors.push('Withdrawal amount must be greater than $0.');
+  } 
+  
+  if (transactionData.debit > SINGLE_DEPOSIT_LIMIT) {
+    transactionState.errors.push(
+      'Withdrawal exceeds single transaction limit.', 
+      `Withdrawals must be $${SINGLE_DEPOSIT_LIMIT} or less.`
+    );
+  }
+
+  if (currentAccount.type === 'CREDIT') {
+
+  } else {
+    if (transactionData.debit > +currentAccount.balance) {
+      transactionState.errors.push(
+        'Withdrawal exceeds account balance.', 
+        `Maximum withdrawal amount is $${currentAccount.balance}.`
+      );
+    }
+  }
+
+  return;
+};
 
 const executeDepositValidation = ({transactionData, transactionState, currentAccount}: ValidationProps) => {
+  
+  if (transactionData.credit <= 0) {
+    transactionState.errors.push('Deposit amount must be greater than $0.');
+  }
+  
   if (transactionData.credit > SINGLE_DEPOSIT_LIMIT) {
     transactionState.errors.push(
       'Deposit exceeds single transaction limit.', 
