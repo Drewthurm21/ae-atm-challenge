@@ -4,26 +4,26 @@ import { standardInputClasses } from "./styles";
 
 type StandardInputProps = {
   name?: string;
-  label?: string;
-  value?: string;
   placeholder?: string;
+  label?: string;
   className?: string;
   maxLength?: number;
+  usdInput?: boolean;
   mask?: (s: string) => string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export default function StandardInput({
   name = "",
-  value = "",
   placeholder = "",
   className = "",
   label,
   maxLength,
+  usdInput,
   mask,
   onChange,
 }: StandardInputProps) {
-  const [inputValue, setInputValue] = useState(value);
+  const [inputValue, setInputValue] = useState("");
   const [inputPlaceholder, setInputPlaceholder] = useState(placeholder);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,8 +54,8 @@ export default function StandardInput({
         name={name}
         onChange={handleInput}
         value={inputValue}
-        onFocus={clearPlaceHolder}
-        onBlur={resetPlaceHolder}
+        onFocus={usdInput ? clearPlaceHolder : null}
+        onBlur={usdInput ? resetPlaceHolder : null}
         maxLength={maxLength ? maxLength : 9}
         placeholder={inputPlaceholder}
         className={twMerge(standardInputClasses, className)}

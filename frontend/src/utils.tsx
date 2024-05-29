@@ -1,48 +1,30 @@
-// input masks
+//input masks
 
-export const returnDigitsOnly = (value: string) => {
+export const returnDigitsOnly = (value: string): string => {
   return value.replace(/\D/gi, "");
 };
 
-export function usdInputMask(input: string): string {
+export const usdInputMask = (input: string): string => {
   let cleanedInput = returnDigitsOnly(input);
 
-  if (cleanedInput.length > 5) cleanedInput = cleanedInput.slice(-5);
-  cleanedInput = cleanedInput.padStart(3, "0");
+  if (cleanedInput.length > 7) cleanedInput = cleanedInput.slice(-7);
+  cleanedInput = cleanedInput.padStart(5, "0");
 
   const dollars = cleanedInput.slice(0, -2);
   const cents = cleanedInput.slice(-2);
   const formattedDollars = parseInt(dollars, 10).toLocaleString();
 
   return `$${formattedDollars}.${cents}`;
-}
+};
 
-export function withdrawalMask(input: string): string {
-  let cleanedInput = returnDigitsOnly(input);
+export const withdrawalMask = (input: string): string => {
+  let [dollars, cents] = input.replace(/,/g, "").split(".").map(Number);
 
-  if (cleanedInput.length > 3) cleanedInput = cleanedInput.slice(-3);
-  let dollars = parseInt(cleanedInput, 10);
-  if (dollars > 400) dollars = 400;
-
-  return `$${dollars.toLocaleString()}.00`;
-}
-
-export function roundToNearestFiveDollars(value: string): string {
-  let cleanedInput = returnDigitsOnly(value);
-  let dollars = parseInt(cleanedInput, 10);
-
+  if (cents >= 50) dollars += 1;
   dollars = Math.round(dollars / 5) * 5;
 
-  return `$${dollars.toLocaleString()}.00`;
-}
-
-export function debounce(func: Function, wait: number) {
-  let timeout: NodeJS.Timeout;
-  return (...args: any[]) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, args), wait);
-  };
-}
+  return `${dollars.toLocaleString()}.00`;
+};
 
 export const usdFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",

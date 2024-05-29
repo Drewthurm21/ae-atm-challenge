@@ -36,4 +36,10 @@ export interface ApiResponseError {
   message: string;
 }
 
-
+export interface TransactionRequestData {
+  customer_id: number;
+  account_id: number;
+  debit: number;
+  credit: number;
+  amount: number;
+};

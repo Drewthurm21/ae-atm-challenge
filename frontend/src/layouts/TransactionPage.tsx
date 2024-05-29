@@ -2,61 +2,62 @@ import PageWrapper from "./PageWrapper";
 import { standardFormClasses } from "../components/styles";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { withdrawalMask, usdFormatter, usdInputMask } from "../utils";
+import { usdInputMask } from "../utils";
 import useAuth from "../hooks/useAuth";
 import StandardInput from "../components/StandardInput";
 import StandardButton from "../components/StandardButton";
-
-interface TransactionData {
-  customer_id: number;
-  account_id: number;
-  debit: number;
-  credit: number;
-  amount: number;
-}
+import useAccounts from "../hooks/useAccount";
 
 export default function TransactionPage() {
   const navigateTo = useNavigate();
   const { currentUser } = useAuth();
+
+  useEffect(() => {
+    if (!currentUser) navigateTo("/login");
+  }, [currentUser, navigateTo]);
+  if (!currentUser) return null;
+
+  const { submitTransaction } = useAccounts();
   const { pathname } = useLocation();
+  const transactionType = pathname === "/deposit" ? "credit" : "debit";
 
   const [transactionData, setTransactionData] = useState({
-    customer_id: 0,
-    account_id: 0,
+    customer_id: currentUser.id,
+    account_id: currentUser.id,
     debit: 0,
     credit: 0,
     amount: 0,
   });
 
-  useEffect(() => {
-    if (!currentUser) navigateTo("/login");
-  }, [currentUser, navigateTo]);
-
   const handleTransactionUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setTransactionData({ ...transactionData, [name]: +value, amount: +value });
+    const amount = parseInt(value.replace(/\D/gi, ""), 10) / 100;
+    setTransactionData({ ...transactionData, [name]: amount, amount });
   };
 
-  const transactionType = pathname === "/deposit" ? "credit" : "debit";
-  const inputMask = pathname === "/deposit" ? usdInputMask : withdrawalMask;
+  const handleTransactionSubmission = async () => {
+    const transaction = { transactionData, pathname, currentUser };
+    await submitTransaction(transaction);
+  };
 
   return (
-    currentUser && (
-      <PageWrapper>
-        <form className={standardFormClasses}>
-          <StandardInput
-            name={transactionType}
-            label={`Enter amount to ${pathname.slice(1)}.`}
-            placeholder={"$0.00"}
-            mask={inputMask}
-            maxLength={8}
-            onChange={handleTransactionUpdate}
-          />
-          <StandardButton onClick={() => navigateTo("/home")}>
-            Back
-          </StandardButton>
-        </form>
-      </PageWrapper>
-    )
+    <PageWrapper>
+      <div className={standardFormClasses}>
+        <StandardInput
+          name={transactionType}
+          label={`How much would you like to ${pathname.slice(1)}?`}
+          placeholder={"$0.00"}
+          mask={usdInputMask}
+          maxLength={8}
+          onChange={handleTransactionUpdate}
+        />
+        <StandardButton onClick={() => navigateTo("/home")}>
+          Back
+        </StandardButton>
+        <StandardButton onClick={handleTransactionSubmission}>
+          Submit
+        </StandardButton>
+      </div>
+    </PageWrapper>
   );
 }
