@@ -1,12 +1,13 @@
-import PageWrapper from "./PageWrapper";
 import { standardFormClasses } from "../components/styles";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { usdInputMask } from "../utils";
+
 import useAuth from "../hooks/useAuth";
+import PageWrapper from "./PageWrapper";
+import useAccounts from "../hooks/useAccount";
 import StandardInput from "../components/StandardInput";
 import StandardButton from "../components/StandardButton";
-import useAccounts from "../hooks/useAccount";
 
 export default function TransactionPage() {
   const navigateTo = useNavigate();
@@ -37,7 +38,7 @@ export default function TransactionPage() {
 
   const handleTransactionSubmission = async () => {
     const transaction = { transactionData, pathname, currentUser };
-    await submitTransaction(transaction);
+    submitTransaction(transaction);
   };
 
   return (
@@ -51,12 +52,14 @@ export default function TransactionPage() {
           maxLength={8}
           onChange={handleTransactionUpdate}
         />
-        <StandardButton onClick={() => navigateTo("/home")}>
-          Back
-        </StandardButton>
-        <StandardButton onClick={handleTransactionSubmission}>
-          Submit
-        </StandardButton>
+        <div className="w-4/5 flex justify-evenly ">
+          <StandardButton onClick={() => navigateTo("/home")}>
+            Back
+          </StandardButton>
+          <StandardButton onClick={handleTransactionSubmission}>
+            Submit
+          </StandardButton>
+        </div>
       </div>
     </PageWrapper>
   );

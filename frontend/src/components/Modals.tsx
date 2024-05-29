@@ -11,7 +11,7 @@ type ModalProps = {
 export const ModalWrapper = ({ messages }: ModalProps) => {
   const dispatch = useAppDispatch();
   const errors =
-    useSelector((state: RootState) => state.errorData.messages) || null;
+    useSelector((state: RootState) => state.modalData.messages) || null;
   const { closeModalDisplay } = useModal();
 
   return (

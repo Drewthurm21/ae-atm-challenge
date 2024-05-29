@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { useAppDispatch, useAppSelector } from './reduxHooks';
+import { selectCurrentAccount } from '../store/accounts/accountSelectors';
 import { loadAccountAction, clearAccountAction } from '../store/accounts/accountsReducer';
 import { setModalMessagingAction as setErrors } from '../store/messaging/modalMessageReducer';
-import { selectCurrentAccount } from '../store/accounts/accountSelectors';
-import { useAppDispatch, useAppSelector } from './reduxHooks';
+
 import { handleApiError } from '../api/apiUtils';
 import { useModal } from '../context/ModalProvider';
 import { TransactionRequestData } from '@shared/types';
@@ -17,7 +18,7 @@ interface ValidationProps {
   currentAccount: any;
   transactionState?: any;
   pathname?: string;
-}
+};
 
 const useAccounts = () => {
   const dispatch = useAppDispatch();
@@ -55,14 +56,15 @@ const useAccounts = () => {
     try {
       let res = await axios.post(`${BASE_URL}/transactions${pathname}`, transactionData);
       dispatch(loadAccountAction(res.data));
+      console.log('res.data in useAccounts', res.data)
       return res.data;
     } catch(error) {
       console.log('error in useAccounts');
       handleApiError(error, dispatch);
-      openModalDisplay()
+      openModalDisplay();
       return null;
-    }
-  }
+    };
+  };
   
   const clearAccounts = () => dispatch(clearAccountAction());
   
@@ -76,7 +78,7 @@ export const validateTransaction = ({transactionData, pathname, currentAccount}:
     executeDepositValidation({transactionData, transactionState, currentAccount});
   } else {
     executeWithdrawalValidation({transactionData, transactionState, currentAccount});
-  }
+  };
   
   if (transactionState.errors.length > 0) {
     transactionState.hasErrors = true;
@@ -86,37 +88,54 @@ export const validateTransaction = ({transactionData, pathname, currentAccount}:
 };
 
 const executeWithdrawalValidation = ({transactionData, transactionState, currentAccount}: ValidationProps) => {
-  const { daily_totals: { total_withdrawals } } = currentAccount;
+  const { balance, credit_limit, daily_totals: { total_withdrawals } } = currentAccount;
+  const { errors } = transactionState
+  const debitAmount = transactionData.debit;
+  
   const allowedWithdrawalAmount = DAILY_WITHDRAW_LIMIT - Math.abs(total_withdrawals);
 
-  console.log(total_withdrawals,'total withdrawals in validator')
+  if (debitAmount % 5 !== 0) {
+    errors.push('Withdrawal amount must be a multiple of $5.'); 
+  }
   
-  if (transactionData.debit > SINGLE_WITHDRAW_LIMIT) {
-    transactionState.errors.push(
+  if (debitAmount > SINGLE_WITHDRAW_LIMIT) {
+    errors.push(
       'Withdrawal exceeds single transaction limit.', 
       `Withdrawals must be $${SINGLE_WITHDRAW_LIMIT} or less.`
     );
-  }
+  };
 
-  if (transactionData.debit > allowedWithdrawalAmount) {
-    transactionState.errors.push(
+  if (debitAmount > allowedWithdrawalAmount) {
+    errors.push(
       'Withdrawal exceeds daily limit.', 
       `Available withdrawal amount is $${allowedWithdrawalAmount}.`
     );
   };
 
   if (currentAccount.type === 'CREDIT') {
-    if (transactionData.debit + currentAccount.balance > currentAccount.credit_limit) {
-      transactionState.errors.push('Withdrawal exceeds credit limit.', `Account credit limit is $${currentAccount.credit_limit}.`);
+    if (debitAmount + balance > Number(credit_limit)) {
+      errors.push(
+        'Withdrawal exceeds credit limit.', 
+      `Account credit limit is $${credit_limit}.`
+
+      );
     };
   } else {
 
-    if (transactionData.debit > currentAccount.balance) {
-      transactionState.errors.push('Withdrawal exceeds account balance.', `Account balance is $${currentAccount.balance}.`);
+    if (debitAmount > balance) {
+      errors.push(
+        'Withdrawal exceeds account balance.', 
+      `Account balance is $${balance}.`
+
+      );
     };
   
-    if (currentAccount.balance - transactionData.debit < 0) {
-      transactionState.errors.push('Withdrawal exceeds account balance.', `Account balance is $${currentAccount.balance}.`);
+    if (debitAmount - balance < 0) {
+      errors.push(
+        'Withdrawal exceeds account balance.', 
+      `Account balance is $${balance}.`
+
+      );
     };
   };
 
@@ -124,25 +143,26 @@ const executeWithdrawalValidation = ({transactionData, transactionState, current
 };
 
 const executeDepositValidation = ({transactionData, transactionState, currentAccount}: ValidationProps) => {
-  
-  if (transactionData.credit <= 0) {
-    transactionState.errors.push('Deposit amount must be greater than $0.');
+  const { errors } = transactionState;
+  const { credit } = transactionData;
+
+  if (credit <= 0) {
+    errors.push('Deposit amount must be greater than $0.');
   }
   
-  if (transactionData.credit > SINGLE_DEPOSIT_LIMIT) {
-    transactionState.errors.push(
+  if (credit > SINGLE_DEPOSIT_LIMIT) {
+    errors.push(
       'Deposit exceeds single transaction limit.', 
       `Deposits must be $${SINGLE_DEPOSIT_LIMIT} or less.`
     );
   };
 
-  if (currentAccount!.type === 'CREDIT' && transactionData.credit > +currentAccount.balance ) {
-    transactionState.errors.push(
+  if (currentAccount!.type === 'CREDIT' && credit > +currentAccount.balance ) {
+    errors.push(
       'Deposit exceeds credit balance.', 
       `Maximum deposit amount is $${currentAccount.balance}.`
     );
   };
 };
-
 
 export default useAccounts;
