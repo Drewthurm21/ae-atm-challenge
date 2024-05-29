@@ -12,8 +12,8 @@ export const standardInputClasses = twMerge(
 );
 
 export const standardButtonClasses = twMerge(
-  "rounded-md px-4 py-2 text-lg text-zinc-50",
-  "bg-gradient-to-br from-primary-100 to-primary-200",
+  "w-64 h-12 rounded-md px-4 py-2 text-lg text-zinc-50",
+  "bg-gradient-to-tl from-primary-100 to-primary-200",
   "ring-1 ring-indigo-200/50",
-  "transition-all hover:scale-[1.03] hover:ring-2 active:scale-[1] active:ring-accent/50"
+  "transition-all hover:scale-[1.03] hover:ring-2 active:scale-[.98] "
 );

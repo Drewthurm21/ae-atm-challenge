@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 export default function PageWrapper({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen transition-all">
       <nav className="bg-zinc-900 text-zinc-50 p-4">
         <h1 className="text-xl font-bold">Banking App</h1>
       </nav>

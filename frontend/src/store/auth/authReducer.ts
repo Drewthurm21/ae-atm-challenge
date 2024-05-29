@@ -1,6 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { UserStateShape } from './authTypes';
 import { SafeCustomerData } from '@shared/types';
+
+interface UserStateShape {
+  user: SafeCustomerData | null;
+}
 
 const initialState: UserStateShape = {
   user: null,
@@ -15,12 +18,9 @@ const userAuth = createSlice({
     },
     logoutUserAction: (state) => {
       state.user = null;
-      state.loadingStatus = 'idle';
     },
   }
 });
-
-
 
 export const { loginUserAction, logoutUserAction } = userAuth.actions;
 export default userAuth.reducer;

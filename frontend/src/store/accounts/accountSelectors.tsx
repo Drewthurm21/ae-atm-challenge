@@ -20,6 +20,6 @@ export const selectCurrentAccount = createSelector(
     if (userId && accounts) {
       return accounts[userId];
     }
-    return undefined;
+    return null;
   }
 );

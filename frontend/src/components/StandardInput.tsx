@@ -4,40 +4,37 @@ import { standardInputClasses } from "./styles";
 
 type StandardInputProps = {
   name?: string;
-  label?: string;
-  value?: string;
   placeholder?: string;
+  hidePlaceholder?: boolean;
+  label?: string;
   className?: string;
+  maxLength?: number;
   mask?: (s: string) => string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export default function StandardInput({
   name = "",
-  value = "",
   placeholder = "",
+  hidePlaceholder,
   className = "",
   label,
+  maxLength,
   mask,
   onChange,
 }: StandardInputProps) {
-  const [inputValue, setInputValue] = useState(value);
+  const [inputValue, setInputValue] = useState("");
   const [inputPlaceholder, setInputPlaceholder] = useState(placeholder);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let { value } = e.target;
-    if (mask) value = mask(e.target.value);
-    setInputValue(value);
+    const { value } = e.target;
+    const maskedValue = mask ? mask(value) : value;
+    setInputValue(maskedValue);
     onChange(e);
   };
 
-  const clearPlaceHolder = () => {
-    setInputPlaceholder("");
-  };
-
-  const resetPlaceHolder = () => {
-    setInputPlaceholder(placeholder || "");
-  };
+  const clearPlaceHolder = () => setInputPlaceholder("");
+  const resetPlaceHolder = () => setInputPlaceholder(placeholder || "");
 
   return (
     <div className="mb-12">
@@ -52,13 +49,14 @@ export default function StandardInput({
         </div>
       )}
       <input
-        id={name}
+        id={name + "-input"}
         type="text"
-        name="account_id"
+        name={name}
         onChange={handleInput}
         value={inputValue}
-        onFocus={clearPlaceHolder}
-        onBlur={resetPlaceHolder}
+        onFocus={hidePlaceholder ? clearPlaceHolder : () => void 0}
+        onBlur={hidePlaceholder ? resetPlaceHolder : () => void 0}
+        maxLength={maxLength ? maxLength : 9}
         placeholder={inputPlaceholder}
         className={twMerge(standardInputClasses, className)}
       />

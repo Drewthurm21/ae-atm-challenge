@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { setReduxErrorsAction as setErrors } from '../store/errors/errorReducer';
+import { setModalErrorsAction as setErrors } from '../store/messaging/modalMessageReducer';
 import { Dispatch } from 'redux';
 
 export const handleApiError = (error: any, dispatch: Dispatch): void => {

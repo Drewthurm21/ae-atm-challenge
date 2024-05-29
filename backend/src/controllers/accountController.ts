@@ -24,8 +24,8 @@ export const getAccountById = async (req: Request, res: Response, next: NextFunc
       type: account.type,
       credit_limit: account.credit_limit,
       daily_totals: {
-        total_deposit: account.daily_totals[0].total_deposit,
-        total_withdrawal: account.daily_totals[0].total_withdrawal,
+        total_deposits: account.daily_totals[0].total_deposits,
+        total_withdrawals: account.daily_totals[0].total_withdrawals,
       }
     };
 

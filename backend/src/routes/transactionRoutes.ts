@@ -4,9 +4,9 @@ import { handleDeposit, handleWithdrawal } from '../controllers/transactionContr
 const router = Router();
 
 
-router.get('/deposit', handleDeposit);
+router.post('/deposit', handleDeposit);
 
-router.get('/withdrawal', handleWithdrawal);
+router.post('/withdrawal', handleWithdrawal);
 
 
 export default router;

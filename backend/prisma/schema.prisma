@@ -44,12 +44,12 @@ enum AccountType {
 }
 
 model DailyTotal {
-  id               Int      @id @default(autoincrement())
-  account_id       Int
-  date             DateTime @default(now()) @db.Date
-  total_deposit    Decimal  @default(0.00) @db.Decimal(18, 2)
-  total_withdrawal Decimal  @default(0.00) @db.Decimal(18, 2)
-  total_transfer   Decimal  @default(0.00) @db.Decimal(18, 2)
+  id                Int      @id @default(autoincrement())
+  account_id        Int
+  date              DateTime @default(now()) @db.Date
+  total_deposits    Decimal  @default(0.00) @db.Decimal(18, 2)
+  total_withdrawals Decimal  @default(0.00) @db.Decimal(18, 2)
+  total_transfer    Decimal  @default(0.00) @db.Decimal(18, 2)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
