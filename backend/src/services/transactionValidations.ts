@@ -28,30 +28,29 @@ export const validateWithdrawalTransaction = (transaction: Transaction, account:
   const transactionStatus: ValidatedTransactionState = { hasErrors: false, errors: [] };
   const { daily_totals } = account;
 
-  const allowedWithdrawalAmount = DAILY_WITHDRAWAL_LIMIT.minus(daily_totals[0].total_withdrawal.abs());
+  const allowedWithdrawalAmount = DAILY_WITHDRAWAL_LIMIT.minus(daily_totals[0].total_withdrawals.abs());
 
   if (transaction.debit.greaterThan(SINGLE_WITHDRAWAL_LIMIT)) {
-    transactionStatus.errors.push('Withdrawal exceeds single transaction limit.', `Withdrawals must be $${SINGLE_WITHDRAWAL_LIMIT} or less.`);
+    transactionStatus.errors.push(
+      'Withdrawal exceeds single transaction limit.', 
+      `Withdrawals must be $${SINGLE_WITHDRAWAL_LIMIT} or less.`
+    );
   };
 
   if (transaction.debit.greaterThan(allowedWithdrawalAmount)) {
-    transactionStatus.errors.push('Withdrawal exceeds daily limit.', `Available withdrawal amount is $${allowedWithdrawalAmount}.`);
+    transactionStatus.errors.push(
+      'Withdrawal exceeds daily limit.', 
+      `Available withdrawal amount is $${allowedWithdrawalAmount}.`
+    );
   };
 
   // Specific checks for credit vs savings/checking accounts
   if (account.type === 'CREDIT') {
-
     if (transaction.debit.plus(account.balance).greaterThan(account.credit_limit)) {
       transactionStatus.errors.push('Withdrawal exceeds credit limit.', `Account credit limit is $${account.credit_limit}.`);
     };
-
   } else {
-
     if (transaction.debit.greaterThan(account.balance)) {
-      transactionStatus.errors.push('Withdrawal exceeds account balance.', `Account balance is $${account.balance}.`);
-    };
-  
-    if (account.balance.minus(transaction.debit).lessThan(0)) {
       transactionStatus.errors.push('Withdrawal exceeds account balance.', `Account balance is $${account.balance}.`);
     };
   };
