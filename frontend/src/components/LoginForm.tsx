@@ -25,9 +25,9 @@ export default function LoginForm({
       <StandardInput
         name="account_id-input"
         label="Enter account ID to login."
-        value={loginFormData.account_id}
         maxLength={8}
         placeholder={"•••••••••"}
+        hidePlaceholder
         mask={returnDigitsOnly}
         onChange={handleUpdate}
       />
