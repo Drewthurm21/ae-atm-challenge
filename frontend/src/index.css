@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Avenir Roman'), url('./styles/avenir_roman_12.woff') format('woff');
+}
+
 body {
+  @apply font-primary;
   background-color: black;
 };

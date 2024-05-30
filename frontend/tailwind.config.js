@@ -18,6 +18,9 @@ export default {
           200: '#6500B0',
         },
       },
+      fontFamily: {
+        primary: ['Avenir', 'sans-serif'],
+      },
     },
   },
   plugins: [],

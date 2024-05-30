@@ -3,7 +3,7 @@ import { standardFormClasses } from "../styles/styles";
 import { returnDigitsOnly } from "../utils";
 import StandardButton from "./StandardButton";
 import StandardInput from "./StandardInput";
-
+import FadeWrapper from "./FadeWrapper";
 export default function LoginForm({
   sendLoginRequest,
 }: {
@@ -21,19 +21,21 @@ export default function LoginForm({
   };
 
   return (
-    <div className={standardFormClasses}>
-      <StandardInput
-        name="account_id-input"
-        label="Enter account ID to login."
-        maxLength={8}
-        placeholder={"•••••••••"}
-        hidePlaceholder
-        mask={returnDigitsOnly}
-        onChange={handleUpdate}
-      />
-      <StandardButton type="submit" onClick={handleLogin}>
-        Sign in
-      </StandardButton>
-    </div>
+    <FadeWrapper>
+      <div className={standardFormClasses}>
+        <StandardInput
+          name="account_id-input"
+          label="Enter account ID to login."
+          maxLength={8}
+          placeholder={"•••••••••"}
+          hidePlaceholder
+          mask={returnDigitsOnly}
+          onChange={handleUpdate}
+        />
+        <StandardButton type="submit" onClick={handleLogin}>
+          Sign in
+        </StandardButton>
+      </div>
+    </FadeWrapper>
   );
 }

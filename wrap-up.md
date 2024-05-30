@@ -10,13 +10,15 @@ A few things I would like to improve...
 
 Dev experience / technical:
 more elegant error handling
+better validations with middleware
 stronger testing strategy / coverage overall
-consolidated transaction classs for better encapsulation & maintainability
+consolidated transaction classes for better encapsulation & maintainability
 
 User experience / design:
-better accessibility and typography
+quick cash buttons
+more impactful typography (less generic)
+better accessibility - mabye a visual keybad
 debounce submit input to auto-round withdraws to nearest $5
-find proper animations for
 
 ### If you were to continue building this out, what would you like to add next?
 

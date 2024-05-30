@@ -17,13 +17,12 @@ export default function TransactionPage() {
   useEffect(() => {
     if (!currentUser) navigateTo("/login");
   }, [currentUser, navigateTo]);
-
   if (!currentUser) return null;
 
-  const { validateTransaction, submitTransaction } = useAccounts();
   const { pathname } = useLocation();
+  const { validateTransaction, submitTransaction } = useAccounts();
   const transactionType = pathname === "/deposit" ? "credit" : "debit";
-
+  const debit = transactionType === "debit";
   const [transactionData, setTransactionData] = useState({
     customer_id: currentUser.id,
     account_id: currentUser.id,
@@ -57,7 +56,7 @@ export default function TransactionPage() {
           label={`How much would you like to ${pathname.slice(1)}?`}
           placeholder={"$0.00"}
           mask={usdInputMask}
-          maxLength={8}
+          maxLength={debit ? 7 : 8}
           onChange={handleTransactionUpdate}
         />
         <div className="w-4/5 my-6 flex justify-evenly ">
