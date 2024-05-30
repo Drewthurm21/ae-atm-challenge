@@ -1,4 +1,10 @@
 //input masks
+import { ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export const returnDigitsOnly = (value: string): string => {
   return value.replace(/\D/gi, "");
@@ -25,8 +31,3 @@ export const withdrawalMask = (input: string): string => {
 
   return `${dollars.toLocaleString()}.00`;
 };
-
-export const usdFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});

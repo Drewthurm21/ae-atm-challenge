@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { standardInputClasses } from "./styles";
+import { standardInputClasses } from "../styles/styles";
 
 type StandardInputProps = {
   name?: string;

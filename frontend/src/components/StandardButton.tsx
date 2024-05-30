@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
-import { standardButtonClasses } from "./styles";
+import { standardButtonClasses } from "../styles/styles";
 
 type ButtonProps = {
   children: ReactNode;

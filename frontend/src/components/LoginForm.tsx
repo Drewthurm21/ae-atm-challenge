@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { standardFormClasses } from "./styles";
+import { standardFormClasses } from "../styles/styles";
 import { returnDigitsOnly } from "../utils";
 import StandardButton from "./StandardButton";
 import StandardInput from "./StandardInput";

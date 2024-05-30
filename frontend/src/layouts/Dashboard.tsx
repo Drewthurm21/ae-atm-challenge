@@ -1,5 +1,5 @@
 import PageWrapper from "./PageWrapper";
-import { standardFormClasses } from "../components/styles";
+import { standardFormClasses } from "../styles/styles";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAccounts from "../hooks/useAccount";

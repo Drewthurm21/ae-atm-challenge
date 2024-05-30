@@ -1,4 +1,4 @@
-import { standardFormClasses } from "../components/styles";
+import { standardFormClasses } from "../styles/styles";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import PageWrapper from "./PageWrapper";

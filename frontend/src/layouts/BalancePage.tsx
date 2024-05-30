@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import PageWrapper from "./PageWrapper";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks/reduxHooks";
-import { standardFormClasses } from "../components/styles";
+import { standardFormClasses } from "../styles/styles";
 import { selectCurrentAccount } from "../store/accounts/accountSelectors";
-import { usdFormatter } from "../utils";
+import { usdInputMask } from "../utils";
 import useAuth from "../hooks/useAuth";
 import StandardButton from "../components/StandardButton";
 
@@ -27,7 +27,7 @@ export default function BalancePage() {
             </p>
           </div>
           <div className="text-4xl font-bold text-primary-500 my-12">
-            {usdFormatter.format(Number(currentAccount.balance))}
+            {currentAccount.balance && usdInputMask(currentAccount.balance)}
           </div>
           <div className="grid gap-4 grid-cols-2">
             <StandardButton onClick={() => navigateTo("/home")}>
