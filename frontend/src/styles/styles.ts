@@ -2,7 +2,7 @@ import { twMerge } from 'tailwind-merge';
 
 export const standardFormClasses = twMerge(
   "flex flex-col h-[50vh] w-[65vw] rounded-md items-center justify-center",
-  "shadow-xl border-2 border-slate-900 bg-gradient-to-br from-violet-100 to-indigo-300"
+  "border-2 border-slate-900 bg-gradient-to-br from-violet-100 to-indigo-300/90"
 );
 
 export const standardInputClasses = twMerge(

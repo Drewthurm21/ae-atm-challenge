@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { usdInputMask } from "../utils";
 import { useModal } from "../context/ModalProvider";
+import { motion } from "framer-motion";
 import useAuth from "../hooks/useAuth";
 import PageWrapper from "./PageWrapper";
 import useAccounts from "../hooks/useAccount";
@@ -14,7 +15,7 @@ export default function TransactionPage() {
   const navigateTo = useNavigate();
   const { openConfirmModal } = useModal();
   const { currentUser } = useAuth();
-  const messageRef = useRef<Array>(messaging[Math.floor(Math.random() * 5)]);
+  const messageRef = useRef<string[]>(messaging[Math.floor(Math.random() * 5)]);
 
   useEffect(() => {
     if (!currentUser) navigateTo("/login");
@@ -53,16 +54,27 @@ export default function TransactionPage() {
   return (
     <PageWrapper>
       <div className={standardFormClasses}>
-        <h1 className="text-3xl bold -translate-y-4 -translate-x-8">
-          {messageRef.current[0]}
-        </h1>
-        <h1 className="text-2xl bold -translate-y-4 translate-x-8">
-          {messageRef.current[1]}
-        </h1>
         <AppearingText
-          words={`How much would you like to ${pathname.slice(1)}?`}
-          className="text-sm mb-4"
+          words={messageRef.current[0]}
+          className="text-3xl bold -translate-y-4 -translate-x-8"
         />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+        >
+          <AppearingText
+            words={messageRef.current[1]}
+            className="text-2xl bold -translate-y-4 translate-x-8"
+          />
+        </motion.div>
+
+        <p className="text-lg mt-4">
+          {`How much would you like to ${pathname.slice(
+            1,
+            debit ? -2 : pathname.length
+          )}?`}
+        </p>
         <StandardInput
           name={transactionType}
           label={""}
