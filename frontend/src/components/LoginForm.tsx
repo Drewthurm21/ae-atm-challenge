@@ -21,7 +21,7 @@ export default function LoginForm({
   };
 
   return (
-    <form className={standardFormClasses} onSubmit={(e) => e.preventDefault()}>
+    <div className={standardFormClasses}>
       <StandardInput
         name="account_id-input"
         label="Enter account ID to login."
@@ -34,6 +34,6 @@ export default function LoginForm({
       <StandardButton type="submit" onClick={handleLogin}>
         Sign in
       </StandardButton>
-    </form>
+    </div>
   );
 }
