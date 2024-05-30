@@ -20,8 +20,8 @@ export const standardButtonClasses = twMerge(
 
 export const confirmBtnClasses = twMerge(
   "shadow-md ring-1 ring-black bg-white text-center text-primary-100 w-1/3 py-2 rounded",
-  "transition-all hover:text-black hover:scale-[1.02] hover:shadow-lg hover:underline hover:translate-y-2",
-  "active:scale-[0.98] hover:y-2 active:ring-1 acrive:ring-white active:shadow-none duration-200",
+  "transition-all hover:text-black hover:scale-[1.02] hover:shadow-lg hover:underline hover:-translate-y-1",
+  "active:scale-[0.98] active:ring-1 acrive:ring-white active:shadow-none duration-200",
 )
 
 export const cancelBtnClasses = twMerge(

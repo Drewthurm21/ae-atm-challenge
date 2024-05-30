@@ -1,11 +1,12 @@
 import { standardFormClasses } from "../styles/styles";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import PageWrapper from "./PageWrapper";
 import { usdInputMask } from "../utils";
 import { useModal } from "../context/ModalProvider";
 import useAuth from "../hooks/useAuth";
+import PageWrapper from "./PageWrapper";
 import useAccounts from "../hooks/useAccount";
+import AppearingText from "../components/AppearingText";
 import StandardInput from "../components/StandardInput";
 import StandardButton from "../components/StandardButton";
 
@@ -13,6 +14,7 @@ export default function TransactionPage() {
   const navigateTo = useNavigate();
   const { openConfirmModal } = useModal();
   const { currentUser } = useAuth();
+  const messageRef = useRef<Array>(messaging[Math.floor(Math.random() * 5)]);
 
   useEffect(() => {
     if (!currentUser) navigateTo("/login");
@@ -38,11 +40,11 @@ export default function TransactionPage() {
   };
 
   const handleTransactionSubmission = async () => {
-    const validatedTransaction = validateTransaction({
+    const pendingTransacton = validateTransaction({
       transactionData,
       pathname,
     });
-    if (validatedTransaction.hasErrors) return;
+    if (pendingTransacton.hasErrors) return;
 
     const transaction = { transactionData, pathname, currentUser };
     openConfirmModal(() => submitTransaction(transaction));
@@ -51,15 +53,25 @@ export default function TransactionPage() {
   return (
     <PageWrapper>
       <div className={standardFormClasses}>
+        <h1 className="text-3xl bold -translate-y-4 -translate-x-8">
+          {messageRef.current[0]}
+        </h1>
+        <h1 className="text-2xl bold -translate-y-4 translate-x-8">
+          {messageRef.current[1]}
+        </h1>
+        <AppearingText
+          words={`How much would you like to ${pathname.slice(1)}?`}
+          className="text-sm mb-4"
+        />
         <StandardInput
           name={transactionType}
-          label={`How much would you like to ${pathname.slice(1)}?`}
+          label={""}
           placeholder={"$0.00"}
           mask={usdInputMask}
           maxLength={debit ? 7 : 8}
           onChange={handleTransactionUpdate}
         />
-        <div className="w-4/5 my-6 flex justify-evenly ">
+        <div className="flex w-4/5 mt-6 justify-evenly translate-y-12">
           <StandardButton onClick={() => navigateTo("/home")}>
             Back
           </StandardButton>
@@ -71,3 +83,11 @@ export default function TransactionPage() {
     </PageWrapper>
   );
 }
+
+const messaging = [
+  ["Need a loan?", "We're here for you."],
+  ["Looking to invest?", "Let us guide you."],
+  ["Trying to save?", "Let's make a plan."],
+  ["Want financial advice?", "You can count on us."],
+  ["Building credit?", "We can support you."],
+];
