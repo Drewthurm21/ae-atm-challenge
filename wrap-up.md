@@ -6,7 +6,9 @@
 
 Quick start guide:
 
+- remove .example from the .env file in root directory
 - Start the challenge_db container
+- copy the .env file into the backend directory
 - navigate to backend and run `npm install`
 - run `npm run dbSetup`
 - run `npm start`
