@@ -1,10 +1,11 @@
-import { standardFormClasses } from "../components/styles";
+import { standardFormClasses } from "../styles/styles";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import PageWrapper from "./PageWrapper";
 import { usdInputMask } from "../utils";
 import { useModal } from "../context/ModalProvider";
+import MessagingHeaders from "../components/MessagingHeader";
 import useAuth from "../hooks/useAuth";
+import PageWrapper from "./PageWrapper";
 import useAccounts from "../hooks/useAccount";
 import StandardInput from "../components/StandardInput";
 import StandardButton from "../components/StandardButton";
@@ -17,13 +18,12 @@ export default function TransactionPage() {
   useEffect(() => {
     if (!currentUser) navigateTo("/login");
   }, [currentUser, navigateTo]);
-
   if (!currentUser) return null;
 
-  const { validateTransaction, submitTransaction } = useAccounts();
   const { pathname } = useLocation();
+  const { validateTransaction, submitTransaction } = useAccounts();
   const transactionType = pathname === "/deposit" ? "credit" : "debit";
-
+  const debit = transactionType === "debit";
   const [transactionData, setTransactionData] = useState({
     customer_id: currentUser.id,
     account_id: currentUser.id,
@@ -39,11 +39,11 @@ export default function TransactionPage() {
   };
 
   const handleTransactionSubmission = async () => {
-    const validatedTransaction = validateTransaction({
+    const pendingTransacton = validateTransaction({
       transactionData,
       pathname,
     });
-    if (validatedTransaction.hasErrors) return;
+    if (pendingTransacton.hasErrors) return;
 
     const transaction = { transactionData, pathname, currentUser };
     openConfirmModal(() => submitTransaction(transaction));
@@ -52,15 +52,22 @@ export default function TransactionPage() {
   return (
     <PageWrapper>
       <div className={standardFormClasses}>
+        <MessagingHeaders />
+        <p className="text-lg mt-4">
+          {`How much would you like to ${pathname.slice(
+            1,
+            debit ? -2 : pathname.length
+          )}?`}
+        </p>
         <StandardInput
           name={transactionType}
-          label={`How much would you like to ${pathname.slice(1)}?`}
+          label={""}
           placeholder={"$0.00"}
           mask={usdInputMask}
-          maxLength={8}
+          maxLength={debit ? 7 : 8}
           onChange={handleTransactionUpdate}
         />
-        <div className="w-4/5 my-6 flex justify-evenly ">
+        <div className="flex w-4/5 mt-6 justify-evenly translate-y-12">
           <StandardButton onClick={() => navigateTo("/home")}>
             Back
           </StandardButton>

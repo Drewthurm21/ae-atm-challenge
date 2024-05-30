@@ -1,13 +1,19 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { twMerge } from "tailwind-merge";
 import { useModal } from "../context/ModalProvider";
 import { AnimatePresence, motion } from "framer-motion";
 import { RootState, useAppDispatch } from "../store/store";
-import { FiAlertCircle } from "react-icons/fi";
+import { FiAlertCircle, FiCheckCircle } from "react-icons/fi";
+import { FaRegQuestionCircle } from "react-icons/fa";
+import { confirmBtnClasses, cancelBtnClasses } from "../styles/styles";
 import {
   clearModalMessagingAction as clearMessages,
   clearModalErrorsAction as clearErrors,
 } from "../store/messaging/modalMessageReducer";
+
+const BIG_ICON_CLASS =
+  "text-white/10 rotate-12 text-[250px] absolute z-0 -top-24 -left-24";
 
 interface MessageModalProps {
   errors: string[] | null;
@@ -53,6 +59,21 @@ const MessagingModal = ({
   logoutUser,
 }: MessageModalProps) => {
   const msgIndex = Math.floor(Math.random() * 5);
+  const ModalIcons = errors
+    ? [
+        <FiAlertCircle className={BIG_ICON_CLASS} />,
+        <FiAlertCircle className="text-red-600" />,
+      ]
+    : [
+        <FiCheckCircle
+          className={twMerge(
+            BIG_ICON_CLASS,
+            "rotate-0 text-[200px] -top-12 -left-12"
+          )}
+        />,
+        <FiCheckCircle className="text-accent" />,
+      ];
+
   return (
     <AnimatePresence>
       <motion.div
@@ -69,10 +90,10 @@ const MessagingModal = ({
           onClick={(e) => e.stopPropagation()}
           className="bg-gradient-to-br from-violet-600 to-indigo-600 text-white p-6 rounded-lg w-full max-w-lg shadow-xl cursor-default relative overflow-hidden"
         >
-          <FiAlertCircle className="text-white/10 rotate-12 text-[250px] absolute z-0 -top-24 -left-24" />
+          {ModalIcons[0]}
           <div className="relative z-10">
             <div className="bg-white w-16 h-16 mb-2 rounded-full text-3xl text-indigo-600 grid place-items-center mx-auto">
-              <FiAlertCircle />
+              {ModalIcons[1]}
             </div>
             <h3 className="text-3xl font-bold text-center mb-2">
               {errors ? "Oops! So sorry!" : "Success!"}
@@ -101,21 +122,20 @@ const MessagingModal = ({
                     <p key={index}>{message}</p>
                   ))}
                 </p>
+                {!errors && messages && (
+                  <p className="text-center mb-6">
+                    Would you like to log out now?
+                  </p>
+                )}
               </>
             )}
-            <div className="flex mt-12">
-              <div
-                onClick={closeModal}
-                className="bg-white transition-all text-indigo-600 hover:scale-[1.03] active:scale-[.98] text-center font-semibold w-full py-2 rounded"
-              >
-                {errors ? "Understood!" : "Okay!"}
+            <div className="flex justify-evenly mt-12">
+              <div onClick={closeModal} className={confirmBtnClasses}>
+                {errors ? "Understood!" : "No, go back."}
               </div>
               {!errors && messages && (
-                <div
-                  onClick={logoutUser}
-                  className="bg-white transition-all text-indigo-600 hover:scale-[1.03] active:scale-[.98] text-center font-semibold w-full py-2 rounded"
-                >
-                  No, Log me out!
+                <div onClick={logoutUser} className={confirmBtnClasses}>
+                  Yes, Log me out!
                 </div>
               )}
             </div>
@@ -168,26 +188,20 @@ export const ConfirmationModal = ({
           onClick={(e) => e.stopPropagation()}
           className="bg-gradient-to-br from-violet-600 to-indigo-600 text-white p-6 rounded-lg w-full max-w-lg shadow-xl cursor-default relative overflow-hidden"
         >
-          <FiAlertCircle className="text-white/10 rotate-12 text-[250px] absolute z-0 -top-24 -left-24" />
+          <FaRegQuestionCircle className={BIG_ICON_CLASS} />
           <div className="relative z-10">
             <div className="bg-white w-16 h-16 mb-2 rounded-full text-3xl text-indigo-600 grid place-items-center mx-auto">
-              <FiAlertCircle />
+              <FaRegQuestionCircle className="text-amber-400" />
             </div>
             <h3 className="text-3xl font-bold text-center mb-2">
               Are you sure?
             </h3>
             <p className="text-center mb-6">Are you sure?</p>
-            <div className="flex gap-2">
-              <div
-                onClick={closeModal}
-                className="bg-white hover:bg-white/10 transition-colors text-center text-primary-100 font-semibold w-full py-2 rounded"
-              >
+            <div className="flex w-full justify-evenly">
+              <div onClick={closeModal} className={cancelBtnClasses}>
                 Cancel Transaction
               </div>
-              <div
-                onClick={confirmCb}
-                className="bg-white hover:opacity-90 transition-opacity text-center text-primary-100 font-semibold w-full py-2 rounded"
-              >
+              <div onClick={confirmCb} className={confirmBtnClasses}>
                 Confirm Transaction
               </div>
             </div>

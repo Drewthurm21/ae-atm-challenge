@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { standardInputClasses } from "./styles";
+import { standardInputClasses } from "../styles/styles";
 
 type StandardInputProps = {
   name?: string;
@@ -42,7 +42,7 @@ export default function StandardInput({
         <div className="mb-1.5 flex items-end justify-between">
           <label
             htmlFor={name}
-            className="block text-black text-xl font-semibold mb-2"
+            className="block text-black text-xs font-semibold mb-2"
           >
             {label}
           </label>
