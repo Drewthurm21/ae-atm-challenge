@@ -29,3 +29,28 @@ export const cancelBtnClasses = twMerge(
   "transition-all hover:bg-white/90 hover:scale-[1.02] hover:shadow-lg hover:ring-red",
   "active:scale-[0.98] active:y-2 active:font-bold active:ring-0 active:shadow-none duration-200",
 )
+let store: any = null
+
+
+
+
+
+store = {
+  userAuth: {
+    user: {
+      id: 1,
+      name: "John Doe",
+      account_ids: [1, 2, 3],
+    }
+  },
+  accountData: {
+    accounts: {
+      1: {
+        id: 1,
+        name: "John Doe's Savings",
+        balance: "1000",
+        transactions: [1, 2, 3],
+      } 
+    }
+  }
+}

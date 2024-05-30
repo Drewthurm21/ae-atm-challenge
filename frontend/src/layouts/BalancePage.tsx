@@ -1,10 +1,10 @@
-import { useEffect } from "react";
-import PageWrapper from "./PageWrapper";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks/reduxHooks";
 import { standardFormClasses } from "../styles/styles";
 import { selectCurrentAccount } from "../store/accounts/accountSelectors";
-import { usdInputMask } from "../utils";
+import CountUp from "react-countup";
+import PageWrapper from "./PageWrapper";
 import useAuth from "../hooks/useAuth";
 import StandardButton from "../components/StandardButton";
 
@@ -16,6 +16,9 @@ export default function BalancePage() {
   useEffect(() => {
     if (!currentUser || !currentAccount) navigateTo("/login");
   }, [currentUser, navigateTo, currentAccount]);
+  if (!currentUser || !currentAccount) return null;
+
+  const [dollars, cents] = currentAccount.balance.split(".");
 
   return (
     currentAccount && (
@@ -27,7 +30,11 @@ export default function BalancePage() {
             </p>
           </div>
           <div className="text-4xl font-bold text-primary-500 my-12">
-            {currentAccount.balance && usdInputMask(currentAccount.balance)}
+            ${currentAccount.balance && <CountUp end={+dollars} duration={3} />}
+            .
+            {cents
+              ? currentAccount.balance && <CountUp end={+cents} duration={3} />
+              : "00"}
           </div>
           <div className="grid gap-4 grid-cols-2">
             <StandardButton onClick={() => navigateTo("/home")}>
