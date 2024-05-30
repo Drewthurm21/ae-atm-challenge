@@ -30,13 +30,13 @@ export default function Dashboard() {
             {dashboardCardData.map((card) => (
               <DashboardCard key={card.title} {...card} />
             ))}
-            <StandardButton
-              className="mt-12 col-start-2"
-              onClick={() => navigateTo("/login")}
-            >
-              Log out
-            </StandardButton>
           </div>
+          <StandardButton
+            className="mt-12"
+            onClick={() => navigateTo("/login")}
+          >
+            Log out
+          </StandardButton>
         </div>
       </PageWrapper>
     )

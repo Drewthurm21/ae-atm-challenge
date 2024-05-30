@@ -11,13 +11,6 @@ export const standardInputClasses = twMerge(
   "transition-shadow focus:border-0 focus:outline-0 focus:ring-primary-200 focus:ring-1 focus:ring-offset-1"
 );
 
-export const standardButtonClasses = twMerge(
-  "w-64 h-12 rounded-md px-4 py-2 text-lg text-zinc-50",
-  "bg-gradient-to-tl from-primary-100 to-primary-200",
-  "ring-1 ring-indigo-200/50 shadow-lg",
-  "transition-all hover:scale-[1.02] hover:shadow-xl hover:ring-2 active:scale-[0.98] "
-);
-
 export const confirmBtnClasses = twMerge(
   "shadow-md ring-1 ring-black bg-white text-center text-primary-100 w-1/3 py-2 rounded",
   "transition-all hover:text-black hover:scale-[1.02] hover:shadow-lg hover:underline hover:-translate-y-1",
@@ -29,28 +22,3 @@ export const cancelBtnClasses = twMerge(
   "transition-all hover:bg-white/90 hover:scale-[1.02] hover:shadow-lg hover:ring-red",
   "active:scale-[0.98] active:y-2 active:font-bold active:ring-0 active:shadow-none duration-200",
 )
-let store: any = null
-
-
-
-
-
-store = {
-  userAuth: {
-    user: {
-      id: 1,
-      name: "John Doe",
-      account_ids: [1, 2, 3],
-    }
-  },
-  accountData: {
-    accounts: {
-      1: {
-        id: 1,
-        name: "John Doe's Savings",
-        balance: "1000",
-        transactions: [1, 2, 3],
-      } 
-    }
-  }
-}
