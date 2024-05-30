@@ -14,12 +14,12 @@ export default function BalancePage() {
   const navigateTo = useNavigate();
   const { currentUser } = useAuth();
   const currentAccount = useAppSelector(selectCurrentAccount);
-
   useEffect(() => {
     if (!currentUser || !currentAccount) navigateTo("/login");
   }, [currentUser, navigateTo, currentAccount]);
   if (!currentUser || !currentAccount) return null;
 
+  const credit = currentAccount.type === "CREDIT";
   const [dollars, cents] = currentAccount.balance!.split(".");
 
   return (
@@ -31,7 +31,7 @@ export default function BalancePage() {
           <div className="text-4xl font-bold text-primary-500 my-4">
             <motion.div
               initial={{ color: "#000000" }}
-              animate={{ color: "#10ba68" }}
+              animate={{ color: credit ? "#000000" : "#10ba68" }}
               transition={{ duration: 3 }}
             >
               $
