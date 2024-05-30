@@ -9,18 +9,19 @@ import CountUp from "react-countup";
 import PageWrapper from "./PageWrapper";
 import useAuth from "../hooks/useAuth";
 import StandardButton from "../components/StandardButton";
+import { Account } from "@shared/prismaTypes";
 
 export default function BalancePage() {
   const navigateTo = useNavigate();
   const { currentUser } = useAuth();
-  const currentAccount = useAppSelector(selectCurrentAccount);
+  const currentAccount: Account = useAppSelector(selectCurrentAccount);
   useEffect(() => {
     if (!currentUser || !currentAccount) navigateTo("/login");
   }, [currentUser, navigateTo, currentAccount]);
   if (!currentUser || !currentAccount) return null;
 
   const credit = currentAccount.type === "CREDIT";
-  const [dollars, cents] = currentAccount.balance!.split(".");
+  const [dollars, cents] = currentAccount.balance.split(".");
 
   return (
     currentAccount && (
