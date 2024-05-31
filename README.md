@@ -1,3 +1,5 @@
+### Full documentation for this project is provided [here](https://drew-thurman-atm-challenge.snazzydocs.com/).
+
 Hello! Welcome to the Advisor's Excel coding challenge. The goal of this exercise is to give us an idea of how you write code, and to see your communication style. When you complete the challenge, our team will review your code and if accepted, we will meet for an interview in which we will discuss your work and review with you.
 
 We do ask that you complete this project in Javascript/Typescript, though you may use any frameworks, libraries, or packages you would like.
