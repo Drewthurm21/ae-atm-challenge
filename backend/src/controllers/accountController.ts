@@ -20,6 +20,7 @@ export const getAccountById = async (req: Request, res: Response, next: NextFunc
 
     const accountData = {
       id: account.id,
+      customer_id: account.customer_id,
       balance: account.balance,
       type: account.type,
       credit_limit: account.credit_limit,
