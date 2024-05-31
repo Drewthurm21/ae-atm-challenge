@@ -6,15 +6,11 @@
 
 Quick start guide:
 
-- remove .example from the .env file in root directory
-- Start the challenge_db container
-- copy the .env file into the backend directory
-- navigate to backend and run `npm install`
-- run `npm run dbSetup`
-- run `npm start`
-- navigate to frontend and run `npm install`
-- run `npm run dev`
-- Navigate to the site in your browser or click the link [here.](http://localhost:5173)
+- remove .example from the .env file in root & copy it to /backend
+- run docker compose up -d in the root directory
+- navigate to /backend & run npm install && npm run dbSetup && npm start
+- open a new terminal in /frontend & run npm install && npm run dev
+- ctrl + click the link in your terminal
 
 ### Were there any pieces of this project that you were not able to complete that you'd like to mention?
 
