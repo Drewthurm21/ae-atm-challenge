@@ -7,9 +7,9 @@
 Quick start guide:
 
 - remove .example from the .env file in root & copy it to /backend
-- run docker compose up -d in the root directory
-- navigate to /backend & run npm install && npm run dbSetup && npm start
-- open a new terminal in /frontend & run npm install && npm run dev
+- run `docker compose up -d` in the root directory
+- navigate to /backend & run `npm install && npm run dbSetup && npm start`
+- open a new terminal in /frontend & run `npm install && npm run dev`
 - ctrl + click the link in your terminal
 
 ### Were there any pieces of this project that you were not able to complete that you'd like to mention?
@@ -35,17 +35,15 @@ Quick start guide:
 
 Disregarding security I think the next feature I would implement, after shoring up the notes above, would be multiple accounts for users. Or transaction history on their balance page. Most of the groundwork for both of these features is already laid. The user data returns an account_ids array and the accounts slice in redux is already normalized and there is plenty of screen real estate left to rework the dashboard.
 
-I would add a /users/:id/accounts route to serve the user's full accounts data from our API. The return values would be about the same shape but we would add a transaction_ids array for reference. I would write/expose a new method in our useAccounts hook to request the data and place it into redux. Then our dashboard could be upgraded to support a nav or hamburger menu that allows account selection. I would probably want transactions to have their own reducer, also normalized. Transactions would be separated by account and sorted by date. ( see below )
+I would add a /users/:id/accounts route to serve the user's full accounts data from our API. The return values would be about the same shape but we would add a transaction_ids array for reference. I would write/expose a new method in our useAccounts hook to request the data and place it into redux. Then our dashboard could be upgraded to support a nav or hamburger menu that allows account selection. I would probably want transactions to have their own reducer and be a simple normalized object. ( see below )
 
 Alternatively we couls store each transaction inside the account itself but I don't like nesting more than 2-3 levels unless there's a good reason.
 
 ```javascript
 transactions: {
-  [account_id]: {
     [transaction_id]: {
       ...transaction
     }
-  }
 }
 ```
 
